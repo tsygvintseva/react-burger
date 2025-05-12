@@ -1,7 +1,9 @@
+import { EIngredientType } from './enums';
+
 export type TIngredient = {
 	_id: string;
 	name: string;
-	type: string;
+	type: EIngredientType;
 	proteins: number;
 	fat: number;
 	carbohydrates: number;

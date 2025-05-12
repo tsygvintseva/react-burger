@@ -1,7 +1,19 @@
-.burger_constructor {
+.constructor {
 	display: flex;
 	flex-direction: column;
+	align-items: flex-end;
+	row-gap: 16px;
 	width: 600px;
-	padding-bottom: 20px;
+	height: min-content;
+	max-height: calc(100% - 156px);
+	overflow: hidden;
 	color: var(--text-primary-color);
+}
+
+.footer {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	margin-bottom: 52px;
+	column-gap: 40px;
 }

@@ -1,32 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+import { TIngredient } from '@utils/types';
+import { EIngredientType } from '@/utils/enums';
+
 import styles from './burger-ingredients.module.css';
-import { TIngredient } from '@utils/types.ts';
-import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+import { IngredientsMenu } from './ingredients-menu/ingredients-menu';
+import { Ingredients } from './ingredients/ingredients';
 
 type TBurgerIngredientsProps = {
 	ingredients: TIngredient[];
+	orderList: TIngredient[];
+	selectIngredient: (ingredient: TIngredient) => void;
 };
 
 export const BurgerIngredients = ({
 	ingredients,
+	orderList,
+	selectIngredient,
 }: TBurgerIngredientsProps): React.JSX.Element => {
-	console.log(ingredients);
+	const [activeTab, setActiveTab] = useState(EIngredientType.Bun);
+
+	const handlerTabClick = (event: string) => {
+		setActiveTab(event as EIngredientType);
+	};
+
+	const tabs = [
+		{
+			value: EIngredientType.Bun,
+			name: 'Булки',
+		},
+		{
+			value: EIngredientType.Sauce,
+			name: 'Соусы',
+		},
+		{
+			value: EIngredientType.Main,
+			name: 'Начинки',
+		},
+	];
 
 	return (
-		<section className={styles.burger_ingredients}>
-			<nav>
-				<ul className={styles.menu}>
-					<Tab value='bun' active={true} onClick={() => {}}>
-						Булки
-					</Tab>
-					<Tab value='main' active={false} onClick={() => {}}>
-						Начинки
-					</Tab>
-					<Tab value='sauce' active={false} onClick={() => {}}>
-						Соусы
-					</Tab>
-				</ul>
-			</nav>
+		<section className={styles.ingredients}>
+			<IngredientsMenu
+				tabs={tabs}
+				activeTab={activeTab}
+				setActiveTab={handlerTabClick}
+			/>
+
+			<Ingredients
+				ingredients={ingredients}
+				orderList={orderList}
+				types={tabs.map((item) => item.value)}
+				activeTab={activeTab}
+				selectIngredient={selectIngredient}
+			/>
 		</section>
 	);
 };
