@@ -1,0 +1,19 @@
+.content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.nutrition {
+	font-family: 'Jet Brains Mono', 'Arial', sans-serif;
+}
+
+.nutrition th,
+.nutrition td {
+	text-align: center;
+}
+
+.nutrition th:last-of-type,
+.nutrition td:last-of-type {
+	padding-right: 0;
+}

@@ -1,24 +1,23 @@
 import { useEffect, useRef } from 'react';
-import styles from './ingredients-list.module.css';
 
 import { EIngredientType } from '@/utils/enums';
 import { TIngredient } from '@/utils/types';
-
 import { IngredientsListItem } from '../ingredients-list-item/ingredients-list-item';
+import styles from './ingredients-list.module.css';
 
 type TIngredientsListProps = {
-	ingredients: TIngredient[];
-	orderList: TIngredient[];
 	type: EIngredientType;
 	activeTab: string;
+	orderList: TIngredient[];
+	ingredients: TIngredient[];
 	selectIngredient: (ingredient: TIngredient) => void;
 };
 
 export const IngredientsList = ({
-	ingredients,
-	orderList,
 	type,
 	activeTab,
+	orderList,
+	ingredients,
 	selectIngredient,
 }: TIngredientsListProps): React.JSX.Element => {
 	const sectionRef = useRef<HTMLElement>(null);

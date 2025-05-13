@@ -1,11 +1,10 @@
-import styles from './constructor-drag-list-item.module.css';
-
 import {
 	ConstructorElement,
 	DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { TIngredient } from '@utils/types.ts';
+import styles from './constructor-drag-list-item.module.css';
 
 type TConstructorDragListItemProps = {
 	ingredient: TIngredient;

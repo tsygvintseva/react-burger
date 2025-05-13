@@ -5,3 +5,10 @@
 	color: var(--text-primary-color);
 	font-family: 'Jet Brains Mono', serif;
 }
+
+.ingredients_list {
+	display: flex;
+	flex-direction: column;
+	row-gap: 40px;
+	overflow: hidden auto;
+}

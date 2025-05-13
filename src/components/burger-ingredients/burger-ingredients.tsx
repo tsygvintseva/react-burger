@@ -1,59 +1,77 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { TIngredient } from '@utils/types';
 import { EIngredientType } from '@/utils/enums';
-
 import styles from './burger-ingredients.module.css';
 import { IngredientsMenu } from './ingredients-menu/ingredients-menu';
-import { Ingredients } from './ingredients/ingredients';
+import { IngredientsList } from './ingredients-list/ingredients-list';
 
 type TBurgerIngredientsProps = {
-	ingredients: TIngredient[];
 	orderList: TIngredient[];
+	ingredients: TIngredient[];
 	selectIngredient: (ingredient: TIngredient) => void;
 };
 
+type TGroupedIngredients = Partial<Record<EIngredientType, TIngredient[]>>;
+
+const tabs = [
+	{
+		value: EIngredientType.Bun,
+		name: 'Булки',
+	},
+	{
+		value: EIngredientType.Sauce,
+		name: 'Соусы',
+	},
+	{
+		value: EIngredientType.Main,
+		name: 'Начинки',
+	},
+];
+
 export const BurgerIngredients = ({
-	ingredients,
 	orderList,
+	ingredients,
 	selectIngredient,
 }: TBurgerIngredientsProps): React.JSX.Element => {
 	const [activeTab, setActiveTab] = useState(EIngredientType.Bun);
 
-	const handlerTabClick = (event: string) => {
+	const handleTabClick = (event: string) => {
 		setActiveTab(event as EIngredientType);
 	};
 
-	const tabs = [
-		{
-			value: EIngredientType.Bun,
-			name: 'Булки',
-		},
-		{
-			value: EIngredientType.Sauce,
-			name: 'Соусы',
-		},
-		{
-			value: EIngredientType.Main,
-			name: 'Начинки',
-		},
-	];
+	const groupedIngredients = useMemo(() => {
+		const result: TGroupedIngredients = {} as TGroupedIngredients;
+
+		for (const { value: type } of tabs) {
+			result[type as EIngredientType] = ingredients.filter(
+				(ingredient) => ingredient.type === type
+			);
+		}
+
+		return result;
+	}, [ingredients]);
 
 	return (
 		<section className={styles.ingredients}>
 			<IngredientsMenu
 				tabs={tabs}
 				activeTab={activeTab}
-				setActiveTab={handlerTabClick}
+				setActiveTab={handleTabClick}
 			/>
 
-			<Ingredients
-				ingredients={ingredients}
-				orderList={orderList}
-				types={tabs.map((item) => item.value)}
-				activeTab={activeTab}
-				selectIngredient={selectIngredient}
-			/>
+			<div className={`${styles.ingredients_list} mt-10 mb-10 custom-scroll`}>
+				{Object.entries(groupedIngredients).map(([type, items]) => (
+					<IngredientsList
+						key={type}
+						ingredients={items}
+						orderList={orderList}
+						type={type as EIngredientType}
+						activeTab={activeTab}
+						selectIngredient={selectIngredient}
+					/>
+				))}
+			</div>
 		</section>
 	);
 };

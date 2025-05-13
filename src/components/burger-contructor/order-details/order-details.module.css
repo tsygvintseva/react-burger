@@ -1,0 +1,19 @@
+.content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.number {
+	text-shadow:
+		0 4px 32px rgb(51 51 255 / 50%),
+		0 0 8px rgb(51 51 255 / 25%),
+		0 0 16px rgb(51 51 255 / 25%);
+}
+
+.description {
+	display: flex;
+	flex-direction: column;
+	row-gap: 8px;
+	text-align: center;
+}

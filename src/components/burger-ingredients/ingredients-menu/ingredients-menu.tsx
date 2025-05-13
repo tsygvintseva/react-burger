@@ -1,18 +1,17 @@
-import styles from './ingredients-menu.module.css';
-
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { EIngredientType } from '@/utils/enums';
+import styles from './ingredients-menu.module.css';
 
 type TIngredientsMenuProps = {
-	activeTab: EIngredientType;
 	tabs: { value: EIngredientType; name: string }[];
+	activeTab: EIngredientType;
 	setActiveTab: (active: string) => void;
 };
 
 export const IngredientsMenu = ({
-	activeTab,
 	tabs,
+	activeTab,
 	setActiveTab,
 }: TIngredientsMenuProps): React.JSX.Element => {
 	return (

@@ -1,7 +1,7 @@
-import styles from './constructor-drag-list.module.css';
-
 import { ConstructorDragListItem } from '../constructor-drag-list-item/constructor-drag-list-item';
 import { TBurgerConstructorProps } from '../burger-constructor';
+
+import styles from './constructor-drag-list.module.css';
 
 export const ConstructorDragList = ({
 	ingredients,
