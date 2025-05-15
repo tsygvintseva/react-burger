@@ -10,16 +10,17 @@ export const useModalVisible = (
 	options?: UseModalOptions
 ) => {
 	const [isOpen, setIsOpen] = useState(initialState);
+	const { onOpen, onClose } = options ?? {};
 
 	const open = useCallback(() => {
 		setIsOpen(true);
-		options?.onOpen?.();
-	}, [options]);
+		onOpen?.();
+	}, [onOpen]);
 
 	const close = useCallback(() => {
 		setIsOpen(false);
-		options?.onClose?.();
-	}, [options]);
+		onClose?.();
+	}, [onClose]);
 
 	const toggle = useCallback(() => {
 		setIsOpen((prev) => {
@@ -30,7 +31,7 @@ export const useModalVisible = (
 
 			return next;
 		});
-	}, [options]);
+	}, [onOpen, onClose]);
 
 	useEffect(() => {
 		if (!isOpen) return;
