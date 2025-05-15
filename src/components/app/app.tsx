@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './app.module.css';
 
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients.tsx';
@@ -41,7 +41,7 @@ export const App = (): React.JSX.Element => {
 		getIngredients();
 	}, []);
 
-	const selectIngredient = (ingredient: TIngredient) => {
+	const selectIngredient = useCallback((ingredient: TIngredient) => {
 		setOrderList((prev) => {
 			if (ingredient.type === EIngredientType.Bun) {
 				const isAlreadySelected = prev.some(
@@ -62,16 +62,16 @@ export const App = (): React.JSX.Element => {
 
 			return [...prev, ingredient];
 		});
-	};
+	}, []);
 
-	const unselectIngredient = (index: number) => {
+	const unselectIngredient = useCallback((index: number) => {
 		setOrderList((prev) => {
 			const hasBun = prev.some((item) => item.type === EIngredientType.Bun);
 			const adjustedIndex = hasBun ? index + 1 : index;
 
 			return prev.filter((_, item) => item !== adjustedIndex);
 		});
-	};
+	}, []);
 
 	return (
 		<div className={styles.app}>

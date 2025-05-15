@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
 	Counter,
 	CurrencyIcon,
@@ -7,6 +6,7 @@ import {
 import { TIngredient } from '@/utils/types';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import styles from './ingredients-list-item.module.css';
+import { useModalVisible } from '@/hooks/use-modal-visible';
 
 type TIngredientsItemProps = {
 	counter: number;
@@ -19,17 +19,9 @@ export const IngredientsListItem = ({
 	ingredient,
 	selectIngredient,
 }: TIngredientsItemProps): React.JSX.Element => {
-	const [visibleDetails, toggleVisibleDetails] = useState(false);
-
-	const handleClick = () => {
-		toggleVisibleDetails(true);
-
-		selectIngredient(ingredient);
-	};
-
-	const handleCloseModal = () => {
-		toggleVisibleDetails(false);
-	};
+	const [isOpen, open, close] = useModalVisible(false, {
+		onOpen: () => selectIngredient(ingredient),
+	});
 
 	return (
 		<>
@@ -54,14 +46,10 @@ export const IngredientsListItem = ({
 					{ingredient.name}
 				</h3>
 
-				<button
-					className={styles.ingredient_button}
-					onClick={handleClick}></button>
+				<button className={styles.ingredient_button} onClick={open}></button>
 			</li>
 
-			{visibleDetails && (
-				<IngredientDetails details={ingredient} onClose={handleCloseModal} />
-			)}
+			{isOpen && <IngredientDetails details={ingredient} onClose={close} />}
 		</>
 	);
 };

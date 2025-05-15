@@ -6,9 +6,9 @@ import {
 
 import { EIngredientType } from '@/utils/enums';
 import { TIngredient } from '@utils/types.ts';
+import { useModalVisible } from '@/hooks/use-modal-visible';
 import styles from './burger-constructor.module.css';
 import { ConstructorDragList } from './constructor-drag-list/constructor-drag-list';
-import { useState } from 'react';
 import { OrderDetails } from './order-details/order-details';
 
 export type TBurgerConstructorProps = {
@@ -20,15 +20,7 @@ export const BurgerConstructor = ({
 	ingredients,
 	handleClose,
 }: TBurgerConstructorProps): React.JSX.Element => {
-	const [visibleDetails, toggleVisibleDetails] = useState(false);
-
-	const handleOpenModal = () => {
-		toggleVisibleDetails(true);
-	};
-
-	const handleCloseModal = () => {
-		toggleVisibleDetails(false);
-	};
+	const [isOpen, open, close] = useModalVisible();
 
 	const bun = ingredients.find((item) => item.type === EIngredientType.Bun);
 	const middle = ingredients.filter(
@@ -87,7 +79,7 @@ export const BurgerConstructor = ({
 									htmlType='button'
 									type='primary'
 									size='large'
-									onClick={handleOpenModal}>
+									onClick={open}>
 									Оформить заказ
 								</Button>
 							</div>
@@ -100,7 +92,7 @@ export const BurgerConstructor = ({
 				)}
 			</section>
 
-			{visibleDetails && <OrderDetails onClose={handleCloseModal} />}
+			{isOpen && <OrderDetails onClose={close} />}
 		</>
 	);
 };
