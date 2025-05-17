@@ -1,0 +1,26 @@
+.ingredient {
+	position: relative;
+	max-width: 272px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.ingredient_button {
+	all: unset;
+	position: absolute;
+	top: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.price {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	column-gap: 8px;
+}
+
+.name {
+	min-height: 48px;
+}
