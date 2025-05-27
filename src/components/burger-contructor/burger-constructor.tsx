@@ -1,45 +1,57 @@
+import { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
 	Button,
-	ConstructorElement,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { EIngredientType } from '@/utils/enums';
-import { TIngredient } from '@utils/types.ts';
+import {
+	getConstructorData,
+	removeIngredient,
+} from '@/services/constructor-data/reducer';
 import { useModalVisible } from '@/hooks/use-modal-visible';
 import styles from './burger-constructor.module.css';
-import { ConstructorDragList } from './constructor-drag-list/constructor-drag-list';
+import { ConstructorList } from './constructor-list/constructor-list';
 import { OrderDetails } from './order-details/order-details';
+import { useCreateOrderMutation } from '@/services/orders/api';
+import { TOrder } from '@/utils/types';
 
-export type TBurgerConstructorProps = {
-	ingredients: TIngredient[];
-	handleClose: (index: number) => void;
-};
+export const BurgerConstructor = (): React.JSX.Element => {
+	const [orderData, setOrderData] = useState<TOrder['order'] | null>(null);
 
-export const BurgerConstructor = ({
-	ingredients,
-	handleClose,
-}: TBurgerConstructorProps): React.JSX.Element => {
 	const [isOpen, open, close] = useModalVisible();
 
-	const bun = ingredients.find((item) => item.type === EIngredientType.Bun);
-	const middle = ingredients.filter(
-		(item) => item.type !== EIngredientType.Bun
-	);
+	const [createOrder] = useCreateOrderMutation();
 
-	const totalPrice = ingredients.reduce((sum, item) => {
-		const bunBonus = item.type === EIngredientType.Bun ? item.price : 0;
+	const dispatch = useDispatch();
 
-		return sum + item.price + bunBonus;
-	}, 0);
+	const handleUnSelectIngredient = (key: string) => {
+		dispatch(removeIngredient(key));
+	};
+
+	const constructorData = useSelector(getConstructorData);
+
+	const totalPrice = useMemo(() => {
+		return constructorData.reduce((sum, item) => sum + item.price, 0);
+	}, [constructorData]);
+
+	const handleClick = () => {
+		const ids = constructorData.map((item) => item._id);
+		createOrder({ ingredients: ids })
+			.unwrap()
+			.then(({ order }) => {
+				setOrderData(order);
+				open();
+			});
+	};
 
 	return (
 		<>
 			<section>
-				{ingredients.length ? (
+				{constructorData.length ? (
 					<>
 						<div className={`${styles.constructor} ml-4 mr-4 mb-10`}>
-							{bun && (
+							{/* {bun && (
 								<ConstructorElement
 									type='top'
 									isLocked={true}
@@ -47,14 +59,16 @@ export const BurgerConstructor = ({
 									price={bun.price}
 									thumbnail={bun.image}
 								/>
-							)}
+							)} */}
 
-							<ConstructorDragList
-								ingredients={middle}
-								handleClose={handleClose}
-							/>
+							{
+								<ConstructorList
+									ingredients={constructorData}
+									onClose={handleUnSelectIngredient}
+								/>
+							}
 
-							{bun && (
+							{/* {bun && (
 								<ConstructorElement
 									type='bottom'
 									isLocked={true}
@@ -62,10 +76,10 @@ export const BurgerConstructor = ({
 									price={bun.price}
 									thumbnail={bun.image}
 								/>
-							)}
+							)} */}
 						</div>
 
-						{bun && !!middle.length && (
+						{constructorData.length && (
 							<div className={`${styles.footer} mr-4`}>
 								<p className='text text_type_digits-medium'>
 									<span className='mr-2'>{totalPrice}</span>
@@ -79,7 +93,7 @@ export const BurgerConstructor = ({
 									htmlType='button'
 									type='primary'
 									size='large'
-									onClick={open}>
+									onClick={handleClick}>
 									Оформить заказ
 								</Button>
 							</div>
@@ -92,7 +106,9 @@ export const BurgerConstructor = ({
 				)}
 			</section>
 
-			{isOpen && <OrderDetails onClose={close} />}
+			{isOpen && (
+				<OrderDetails orderNumber={orderData?.number} onClose={close} />
+			)}
 		</>
 	);
 };

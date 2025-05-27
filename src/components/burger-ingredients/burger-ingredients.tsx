@@ -1,77 +1,59 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
-import { TIngredient } from '@utils/types';
 import { EIngredientType } from '@/utils/enums';
 import styles from './burger-ingredients.module.css';
 import { IngredientsMenu } from './ingredients-menu/ingredients-menu';
 import { IngredientsList } from './ingredients-list/ingredients-list';
+import { useModalVisible } from '@/hooks/use-modal-visible';
+import { useSelector } from 'react-redux';
+import { getCurrentIngredient } from '@/services/current-ingredient/reducer';
+import { IngredientDetails } from './ingredient-details/ingredient-details';
+import { useGetIngredientsQuery } from '@/services/ingredients/api';
+import { Preloader } from '../preloader/preloader';
+import { selectGroupedIngredients } from '@/services/ingredients/selectors';
+import { tabs } from '@/utils/const';
 
-type TBurgerIngredientsProps = {
-	orderList: TIngredient[];
-	ingredients: TIngredient[];
-	selectIngredient: (ingredient: TIngredient) => void;
-};
+export const BurgerIngredients = (): React.JSX.Element => {
+	const { isLoading } = useGetIngredientsQuery();
 
-type TGroupedIngredients = Partial<Record<EIngredientType, TIngredient[]>>;
+	const groupedIngredients = useSelector(selectGroupedIngredients);
+	const ingredient = useSelector(getCurrentIngredient);
 
-const tabs = [
-	{
-		value: EIngredientType.Bun,
-		name: 'Булки',
-	},
-	{
-		value: EIngredientType.Sauce,
-		name: 'Соусы',
-	},
-	{
-		value: EIngredientType.Main,
-		name: 'Начинки',
-	},
-];
-
-export const BurgerIngredients = ({
-	orderList,
-	ingredients,
-	selectIngredient,
-}: TBurgerIngredientsProps): React.JSX.Element => {
+	const [isOpen, open, close] = useModalVisible(false);
 	const [activeTab, setActiveTab] = useState(EIngredientType.Bun);
 
 	const handleTabClick = (event: string) => {
 		setActiveTab(event as EIngredientType);
 	};
 
-	const groupedIngredients = useMemo(() => {
-		const result: TGroupedIngredients = {} as TGroupedIngredients;
-
-		for (const { value: type } of tabs) {
-			result[type as EIngredientType] = ingredients.filter(
-				(ingredient) => ingredient.type === type
-			);
-		}
-
-		return result;
-	}, [ingredients]);
-
 	return (
-		<section className={styles.ingredients}>
-			<IngredientsMenu
-				tabs={tabs}
-				activeTab={activeTab}
-				setActiveTab={handleTabClick}
-			/>
-
-			<div className={`${styles.ingredients_list} mt-10 mb-10 custom-scroll`}>
-				{Object.entries(groupedIngredients).map(([type, items]) => (
-					<IngredientsList
-						key={type}
-						ingredients={items}
-						orderList={orderList}
-						type={type as EIngredientType}
+		<>
+			{isLoading ? (
+				<Preloader />
+			) : (
+				<section className={styles.ingredients}>
+					<IngredientsMenu
+						tabs={tabs}
 						activeTab={activeTab}
-						selectIngredient={selectIngredient}
+						setActiveTab={handleTabClick}
 					/>
-				))}
-			</div>
-		</section>
+
+					<div
+						className={`${styles.ingredients_list} mt-10 mb-10 custom-scroll`}>
+						{Object.entries(groupedIngredients).map(([type, items]) => (
+							<IngredientsList
+								key={type}
+								ingredients={items}
+								type={type as EIngredientType}
+								activeTab={activeTab}
+								selectIngredient={open}
+							/>
+						))}
+					</div>
+				</section>
+			)}
+
+			{isOpen && <IngredientDetails details={ingredient!} onClose={close} />}
+		</>
 	);
 };

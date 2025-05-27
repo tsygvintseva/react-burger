@@ -13,19 +13,17 @@ type ApiResponse<T> = {
 	data: T;
 };
 
-const getResponse = async (res: Response): Promise<TIngredient[]> => {
-	if (!res.ok)
-		throw new Error(`Ошибка при загрузке ингредиентов: ${res.status}`);
-
-	const json: ApiResponse<TIngredient[]> = await res.json();
-
-	if (!json.success) throw new Error('Ошибка сервера');
-
-	return json.data;
+const getResponse = (res: Response): Promise<ApiResponse<TIngredient[]>> => {
+	return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 };
 
 export const getIngredients = (): Promise<TIngredient[]> => {
-	return fetch(`${ingredientsApiConfig.baseUrl}/ingrediens`, {
+	return fetch(`${ingredientsApiConfig.baseUrl}/ingredients`, {
 		headers: ingredientsApiConfig.headers,
-	}).then(getResponse);
+	})
+		.then(getResponse)
+		.then((data) => {
+			if (data?.success) return data.data;
+			return Promise.reject(data);
+		});
 };

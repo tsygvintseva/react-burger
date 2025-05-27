@@ -4,14 +4,15 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { TIngredient } from '@/utils/types';
-import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import styles from './ingredients-list-item.module.css';
-import { useModalVisible } from '@/hooks/use-modal-visible';
+import { useDispatch } from 'react-redux';
+import { setCurrentIngredient } from '@/services/current-ingredient/reducer';
+import { addIngredient } from '@/services/constructor-data/reducer';
 
 type TIngredientsItemProps = {
 	counter: number;
 	ingredient: TIngredient;
-	selectIngredient: (ingredient: TIngredient) => void;
+	selectIngredient: () => void;
 };
 
 export const IngredientsListItem = ({
@@ -19,9 +20,14 @@ export const IngredientsListItem = ({
 	ingredient,
 	selectIngredient,
 }: TIngredientsItemProps): React.JSX.Element => {
-	const [isOpen, open, close] = useModalVisible(false, {
-		onOpen: () => selectIngredient(ingredient),
-	});
+	const dispatch = useDispatch();
+
+	const handleSelectIngredient = () => {
+		dispatch(setCurrentIngredient(ingredient));
+		dispatch(addIngredient(ingredient));
+
+		selectIngredient();
+	};
 
 	return (
 		<>
@@ -46,10 +52,10 @@ export const IngredientsListItem = ({
 					{ingredient.name}
 				</h3>
 
-				<button className={styles.ingredient_button} onClick={open}></button>
+				<button
+					className={styles.ingredient_button}
+					onClick={handleSelectIngredient}></button>
 			</li>
-
-			{isOpen && <IngredientDetails details={ingredient} onClose={close} />}
 		</>
 	);
 };

@@ -31,7 +31,7 @@ export const useModalVisible = (
 
 			return next;
 		});
-	}, [onOpen, onClose]);
+	}, [options]);
 
 	useEffect(() => {
 		if (!isOpen) return;
