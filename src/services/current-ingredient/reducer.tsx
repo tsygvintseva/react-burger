@@ -29,9 +29,13 @@ export const currentIngredientSlice = createSlice({
 				};
 			},
 		},
+		clearCurrentIngredient: (state) => {
+			state.currentIngredient = null;
+		},
 	},
 });
 
-export const { setCurrentIngredient } = currentIngredientSlice.actions;
+export const { setCurrentIngredient, clearCurrentIngredient } =
+	currentIngredientSlice.actions;
 export const { getCurrentIngredient, getHoveredIngredientId } =
 	currentIngredientSlice.selectors;

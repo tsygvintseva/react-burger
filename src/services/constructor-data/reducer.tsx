@@ -74,8 +74,23 @@ export const constructorDataSlice = createSlice({
 
 			state.constructorData.splice(index, 1);
 		},
+
+		moveIngredient: (
+			state,
+			action: PayloadAction<{ dragIndex: number; hoverIndex: number }>
+		) => {
+			const { dragIndex, hoverIndex } = action.payload;
+
+			const ingredients = [...state.constructorData];
+			const [draggedItem] = ingredients.splice(dragIndex, 1);
+
+			ingredients.splice(hoverIndex, 0, draggedItem);
+
+			state.constructorData = ingredients;
+		},
 	},
 });
 
-export const { addIngredient, removeIngredient } = constructorDataSlice.actions;
+export const { addIngredient, removeIngredient, moveIngredient } =
+	constructorDataSlice.actions;
 export const { getConstructorData } = constructorDataSlice.selectors;

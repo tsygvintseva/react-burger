@@ -7,8 +7,8 @@ import { IngredientsList } from './ingredients-list/ingredients-list';
 import { useModalVisible } from '@/hooks/use-modal-visible';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+	clearCurrentIngredient,
 	getCurrentIngredient,
-	setCurrentIngredient,
 } from '@/services/current-ingredient/reducer';
 import { IngredientDetails } from './ingredient-details/ingredient-details';
 import { useGetIngredientsQuery } from '@/services/ingredients/api';
@@ -25,14 +25,14 @@ export const BurgerIngredients = (): React.JSX.Element => {
 	const currentIngredient = useSelector(getCurrentIngredient);
 
 	const [isOpen, open, close] = useModalVisible(false, {
-		onClose: () => dispatch(setCurrentIngredient(null)),
+		onClose: () => dispatch(clearCurrentIngredient()),
 	});
 
 	const [activeTab, setActiveTab] = useState(EIngredientType.Bun);
 
 	useEffect(() => {
 		if (currentIngredient) open();
-	}, [currentIngredient]);
+	}, [currentIngredient, open]);
 
 	const handleTabClick = (event: string) => {
 		setActiveTab(event as EIngredientType);
