@@ -1,7 +1,14 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ingredientsApiConfig } from '@api/ingredients-api.tsx';
 import { TIngredient } from '@/utils/types';
+import { BASE_URL } from '@/utils/const';
+
+export const ingredientsApiConfig = {
+	baseUrl: BASE_URL,
+	headers: {
+		'Content-Type': 'application/json',
+	},
+};
 
 export const ingredientsApi = createApi({
 	reducerPath: 'ingredientsApi',

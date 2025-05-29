@@ -3,10 +3,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface CurrentIngredientState {
 	currentIngredient: TIngredient | null;
+	hoveredIngredientId: string | null;
 }
 
 const initialState: CurrentIngredientState = {
 	currentIngredient: null,
+	hoveredIngredientId: null,
 };
 
 export const currentIngredientSlice = createSlice({
@@ -14,6 +16,7 @@ export const currentIngredientSlice = createSlice({
 	initialState,
 	selectors: {
 		getCurrentIngredient: (state) => state.currentIngredient,
+		getHoveredIngredientId: (state) => state.hoveredIngredientId,
 	},
 	reducers: {
 		setCurrentIngredient: {
@@ -30,4 +33,5 @@ export const currentIngredientSlice = createSlice({
 });
 
 export const { setCurrentIngredient } = currentIngredientSlice.actions;
-export const { getCurrentIngredient } = currentIngredientSlice.selectors;
+export const { getCurrentIngredient, getHoveredIngredientId } =
+	currentIngredientSlice.selectors;

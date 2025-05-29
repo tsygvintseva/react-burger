@@ -17,3 +17,22 @@
 	margin-bottom: 52px;
 	column-gap: 40px;
 }
+
+.empty {
+	height: 100%;
+}
+
+@keyframes bounce {
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+
+	50% {
+		transform: translateX(-2px);
+	}
+}
+
+.bounce {
+	animation: bounce 0.4s infinite ease-in-out;
+}

@@ -24,3 +24,18 @@
 .name {
 	min-height: 48px;
 }
+
+@keyframes bounce {
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+
+	50% {
+		transform: translateY(-8px);
+	}
+}
+
+.bouncy {
+	animation: bounce 0.4s infinite ease-in-out;
+}

@@ -12,14 +12,12 @@ type TIngredientsListProps = {
 	type: EIngredientType;
 	activeTab: string;
 	ingredients: TIngredient[];
-	selectIngredient: () => void;
 };
 
 export const IngredientsList = ({
 	type,
 	activeTab,
 	ingredients,
-	selectIngredient,
 }: TIngredientsListProps): React.JSX.Element => {
 	const constructorData = useSelector(getConstructorData);
 
@@ -53,14 +51,15 @@ export const IngredientsList = ({
 
 	return (
 		<section ref={sectionRef}>
-			<h2 className='text text_type_main-medium'>{getListName(type)}</h2>
+			<h2 className='text text_type_main-medium' data-type={type}>
+				{getListName(type)}
+			</h2>
 			<ul className={`${styles.list} pl-4`}>
 				{ingredients.map((item) => (
 					<IngredientsListItem
 						key={item._id}
 						ingredient={item}
 						counter={counters[item._id] ?? 0}
-						selectIngredient={selectIngredient}
 					/>
 				))}
 			</ul>

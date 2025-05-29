@@ -1,7 +1,14 @@
-import { ordersApiConfig } from '@/api/orders-api';
+import { BASE_URL } from '@/utils/const';
 import { TOrder } from '@/utils/types';
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
+
+export const ordersApiConfig = {
+	baseUrl: BASE_URL,
+	headers: {
+		'Content-Type': 'application/json',
+	},
+};
 
 type CreateOrderPayload = {
 	ingredients: string[];

@@ -1,37 +1,40 @@
+import { useDispatch } from 'react-redux';
+import { useDrag } from 'react-dnd';
 import {
 	Counter,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { TIngredient } from '@/utils/types';
-import styles from './ingredients-list-item.module.css';
-import { useDispatch } from 'react-redux';
 import { setCurrentIngredient } from '@/services/current-ingredient/reducer';
-import { addIngredient } from '@/services/constructor-data/reducer';
+import styles from './ingredients-list-item.module.css';
 
 type TIngredientsItemProps = {
 	counter: number;
 	ingredient: TIngredient;
-	selectIngredient: () => void;
 };
 
 export const IngredientsListItem = ({
 	counter,
 	ingredient,
-	selectIngredient,
 }: TIngredientsItemProps): React.JSX.Element => {
 	const dispatch = useDispatch();
 
 	const handleSelectIngredient = () => {
 		dispatch(setCurrentIngredient(ingredient));
-		dispatch(addIngredient(ingredient));
-
-		selectIngredient();
 	};
+
+	const [{ opacity }, ref] = useDrag({
+		type: 'ingredients',
+		item: ingredient,
+		collect: (monitor) => ({
+			opacity: monitor.isDragging() ? 0.5 : 1,
+		}),
+	});
 
 	return (
 		<>
-			<li className={styles.ingredient}>
+			<li className={`${styles.ingredient}`} ref={ref} style={{ opacity }}>
 				{!!counter && (
 					<Counter count={counter} size='default' extraClass='m-1' />
 				)}
