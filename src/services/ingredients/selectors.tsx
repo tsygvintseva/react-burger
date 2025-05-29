@@ -1,8 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { ingredientsApi } from './api';
+
 import { EIngredientType } from '@/utils/enums';
 import { TIngredient } from '@/utils/types';
 import { tabs } from '@/utils/const';
+import { ingredientsApi } from './api';
 
 type TGroupedIngredients = Partial<Record<EIngredientType, TIngredient[]>>;
 

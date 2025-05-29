@@ -1,10 +1,11 @@
+import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
+
+import { moveIngredient } from '@/services/constructor-data/reducer';
 import { TIngredientUniq } from '@/utils/types';
 import { ConstructorListItem } from '../constructor-list-item/constructor-list-item';
 import styles from './constructor-list.module.css';
-import { ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { moveIngredient } from '@/services/constructor-data/reducer';
 
 export type TConstructorListProps = {
 	ingredients: TIngredientUniq[];
@@ -18,6 +19,7 @@ export const ConstructorList = ({
 	const dispatch = useDispatch();
 
 	const first = ingredients[0];
+	const middle = ingredients.slice(1, -1);
 	const last = ingredients[ingredients.length - 1];
 
 	const moveCard = useCallback(
@@ -56,10 +58,7 @@ export const ConstructorList = ({
 			)}
 
 			<ul className={`${styles.list} mt-4 mb-4`}>
-				{ingredients
-					.map((item, i) => ({ item, i }))
-					.filter(({ i }) => i !== 0 && i !== ingredients.length - 1)
-					.map(({ item, i }) => renderCard(item, i))}
+				{middle.map((item, i) => renderCard(item, i + 1))}
 			</ul>
 
 			{last && (

@@ -1,5 +1,6 @@
-import { TIngredient } from '@/utils/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { TIngredient } from '@/utils/types';
 
 interface CurrentIngredientState {
 	currentIngredient: TIngredient | null;

@@ -6,17 +6,17 @@ import {
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { useModalVisible } from '@/hooks/use-modal-visible';
 import {
 	addIngredient,
 	getConstructorData,
 	removeIngredient,
 } from '@/services/constructor-data/reducer';
-import { useModalVisible } from '@/hooks/use-modal-visible';
+import { useCreateOrderMutation } from '@/services/orders/api';
+import { TIngredient, TOrder } from '@/utils/types';
 import styles from './burger-constructor.module.css';
 import { ConstructorList } from './constructor-list/constructor-list';
 import { OrderDetails } from './order-details/order-details';
-import { useCreateOrderMutation } from '@/services/orders/api';
-import { TIngredient, TOrder } from '@/utils/types';
 
 export const BurgerConstructor = (): React.JSX.Element => {
 	const [orderData, setOrderData] = useState<TOrder['order'] | null>(null);

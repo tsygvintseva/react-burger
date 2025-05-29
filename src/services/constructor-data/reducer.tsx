@@ -1,6 +1,7 @@
+import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
+
 import { EIngredientType } from '@/utils/enums';
 import { TIngredient, TIngredientUniq } from '@/utils/types';
-import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
 
 type ConstructorIngredient = TIngredientUniq;
 

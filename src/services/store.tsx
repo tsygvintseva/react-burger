@@ -1,4 +1,5 @@
 import { combineSlices, configureStore as createStore } from '@reduxjs/toolkit';
+
 import { ingredientsApi } from './ingredients/api';
 import { currentIngredientSlice } from './current-ingredient/reducer';
 import { constructorDataSlice } from './constructor-data/reducer';

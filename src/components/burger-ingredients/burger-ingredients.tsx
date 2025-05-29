@@ -1,20 +1,20 @@
 import React, { UIEvent, useEffect, useRef, useState } from 'react';
-
-import { EIngredientType } from '@/utils/enums';
-import styles from './burger-ingredients.module.css';
-import { IngredientsMenu } from './ingredients-menu/ingredients-menu';
-import { IngredientsList } from './ingredients-list/ingredients-list';
-import { useModalVisible } from '@/hooks/use-modal-visible';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { useModalVisible } from '@/hooks/use-modal-visible';
 import {
 	clearCurrentIngredient,
 	getCurrentIngredient,
 } from '@/services/current-ingredient/reducer';
-import { IngredientDetails } from './ingredient-details/ingredient-details';
 import { useGetIngredientsQuery } from '@/services/ingredients/api';
-import { Preloader } from '../preloader/preloader';
 import { selectGroupedIngredients } from '@/services/ingredients/selectors';
+import { EIngredientType } from '@/utils/enums';
 import { tabs } from '@/utils/const';
+import { Preloader } from '../preloader/preloader';
+import styles from './burger-ingredients.module.css';
+import { IngredientsMenu } from './ingredients-menu/ingredients-menu';
+import { IngredientsList } from './ingredients-list/ingredients-list';
+import { IngredientDetails } from './ingredient-details/ingredient-details';
 
 export const BurgerIngredients = (): React.JSX.Element => {
 	const { isLoading } = useGetIngredientsQuery();

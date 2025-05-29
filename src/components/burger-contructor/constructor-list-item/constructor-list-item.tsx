@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+import { useDrag, useDrop, XYCoord } from 'react-dnd';
 import {
 	ConstructorElement,
 	DragIcon,
@@ -5,8 +7,6 @@ import {
 
 import { TIngredientUniq } from '@utils/types.ts';
 import styles from './constructor-list-item.module.css';
-import { useRef } from 'react';
-import { useDrag, useDrop, XYCoord } from 'react-dnd';
 
 type TConstructorListItemProps = {
 	ingredient: TIngredientUniq;

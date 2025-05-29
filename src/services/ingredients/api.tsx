@@ -1,5 +1,6 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
+
 import { TIngredient } from '@/utils/types';
 import { BASE_URL } from '@/utils/const';
 
