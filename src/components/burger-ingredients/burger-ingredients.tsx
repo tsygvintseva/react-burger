@@ -1,4 +1,4 @@
-import React, { UIEvent, useEffect, useState } from 'react';
+import React, { UIEvent, useEffect, useRef, useState } from 'react';
 
 import { EIngredientType } from '@/utils/enums';
 import styles from './burger-ingredients.module.css';
@@ -30,29 +30,36 @@ export const BurgerIngredients = (): React.JSX.Element => {
 
 	const [activeTab, setActiveTab] = useState(EIngredientType.Bun);
 
+	const isTabClick = useRef(false);
+
 	useEffect(() => {
 		if (currentIngredient) open();
 	}, [currentIngredient, open]);
 
 	const handleTabClick = (event: string) => {
 		setActiveTab(event as EIngredientType);
+
+		isTabClick.current = true;
+
+		setTimeout(() => {
+			isTabClick.current = false;
+		}, 1000);
 	};
 
 	const handleScroll = (event: UIEvent<HTMLDivElement>) => {
+		if (isTabClick.current) return;
+
 		const containerTop = event.currentTarget.getBoundingClientRect().top;
 
 		const sectionElements = Array.from(
 			event.currentTarget.querySelectorAll('[data-type]')
 		) as HTMLElement[];
 
-		const closest = sectionElements.reduce((closestSoFar, current) => {
+		const closest = sectionElements.reduce((closest, current) => {
 			const currentTop = current.getBoundingClientRect().top - containerTop;
-			const closestTop =
-				closestSoFar.getBoundingClientRect().top - containerTop;
+			const closestTop = closest.getBoundingClientRect().top - containerTop;
 
-			return Math.abs(currentTop) < Math.abs(closestTop)
-				? current
-				: closestSoFar;
+			return Math.abs(currentTop) < Math.abs(closestTop) ? current : closest;
 		});
 
 		const newActive = closest.getAttribute('data-type') as EIngredientType;
