@@ -21,51 +21,49 @@ export const constructorDataSlice = createSlice({
 	},
 	reducers: {
 		addIngredient: {
-			reducer: (state, action: PayloadAction<ConstructorIngredient>) => {
-				const ingredient = action.payload;
+			reducer: (state, action: PayloadAction<ConstructorIngredient[]>) => {
+				const ingredients = action.payload;
 
-				if (ingredient.type === EIngredientType.Bun) {
+				if (ingredients.length > 1) {
 					const middleIngredients = state.constructorData.filter(
 						(i) => i.type !== EIngredientType.Bun
 					);
-
-					const topBun = {
-						...ingredient,
-						key: nanoid(),
-						name: `${ingredient.name} (верх)`,
-					};
-					const bottomBun = {
-						...ingredient,
-						key: nanoid(),
-						name: ` ${ingredient.name} (низ)`,
-					};
+					const [topBun, bottomBun] = ingredients;
 
 					state.constructorData = [topBun, ...middleIngredients, bottomBun];
 				} else {
-					const topBun = state.constructorData[0];
-					const bottomBun =
-						state.constructorData[state.constructorData.length - 1];
+					const hasBun = state.constructorData[0]?.type === EIngredientType.Bun;
 
-					const hasBuns =
-						topBun?.type === EIngredientType.Bun &&
-						bottomBun?.type === EIngredientType.Bun &&
-						state.constructorData.length >= 2;
-
-					if (hasBuns) {
+					if (hasBun) {
 						state.constructorData.splice(
 							state.constructorData.length - 1,
 							0,
-							ingredient
+							ingredients[0]
 						);
 					} else {
-						state.constructorData.push(ingredient);
+						state.constructorData.push(ingredients[0]);
 					}
 				}
 			},
 
-			prepare: (ingredient: TIngredient) => ({
-				payload: { ...ingredient, key: nanoid() },
-			}),
+			prepare: (ingredient: TIngredient) => {
+				if (ingredient.type === EIngredientType.Bun) {
+					const topBun: ConstructorIngredient = {
+						...ingredient,
+						key: nanoid(),
+						name: `${ingredient.name} (верх)`,
+					};
+					const bottomBun: ConstructorIngredient = {
+						...ingredient,
+						key: nanoid(),
+						name: `${ingredient.name} (низ)`,
+					};
+
+					return { payload: [topBun, bottomBun] };
+				}
+
+				return { payload: [{ ...ingredient, key: nanoid() }] };
+			},
 		},
 
 		removeIngredient: (state, action: PayloadAction<string>) => {
@@ -89,9 +87,17 @@ export const constructorDataSlice = createSlice({
 
 			state.constructorData = ingredients;
 		},
+
+		clearConstructorData: (state) => {
+			state.constructorData = [];
+		},
 	},
 });
 
-export const { addIngredient, removeIngredient, moveIngredient } =
-	constructorDataSlice.actions;
+export const {
+	addIngredient,
+	removeIngredient,
+	moveIngredient,
+	clearConstructorData,
+} = constructorDataSlice.actions;
 export const { getConstructorData } = constructorDataSlice.selectors;

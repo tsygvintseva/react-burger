@@ -6,6 +6,7 @@ import { moveIngredient } from '@/services/constructor-data/reducer';
 import { TIngredientUniq } from '@/utils/types';
 import { ConstructorListItem } from '../constructor-list-item/constructor-list-item';
 import styles from './constructor-list.module.css';
+import { EIngredientType } from '@/utils/enums';
 
 export type TConstructorListProps = {
 	ingredients: TIngredientUniq[];
@@ -19,7 +20,10 @@ export const ConstructorList = ({
 	const dispatch = useDispatch();
 
 	const first = ingredients[0];
-	const middle = ingredients.slice(1, -1);
+	const middle =
+		first && first.type === EIngredientType.Bun
+			? ingredients.slice(1, -1)
+			: ingredients;
 	const last = ingredients[ingredients.length - 1];
 
 	const moveCard = useCallback(
@@ -46,7 +50,7 @@ export const ConstructorList = ({
 
 	return (
 		<>
-			{first && (
+			{first && first.type === EIngredientType.Bun && (
 				<ConstructorElement
 					type='top'
 					isLocked={true}
@@ -61,7 +65,7 @@ export const ConstructorList = ({
 				{middle.map((item, i) => renderCard(item, i + 1))}
 			</ul>
 
-			{last && (
+			{last && last.type === EIngredientType.Bun && (
 				<ConstructorElement
 					type='bottom'
 					isLocked={true}

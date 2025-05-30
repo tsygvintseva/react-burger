@@ -9,6 +9,7 @@ import {
 import { useModalVisible } from '@/hooks/use-modal-visible';
 import {
 	addIngredient,
+	clearConstructorData,
 	getConstructorData,
 	removeIngredient,
 } from '@/services/constructor-data/reducer';
@@ -58,6 +59,8 @@ export const BurgerConstructor = (): React.JSX.Element => {
 			.then(({ order }) => {
 				setOrderData(order);
 				open();
+
+				dispatch(clearConstructorData());
 			});
 	};
 
