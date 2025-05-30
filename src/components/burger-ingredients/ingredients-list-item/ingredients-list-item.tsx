@@ -1,31 +1,40 @@
+import { useDispatch } from 'react-redux';
+import { useDrag } from 'react-dnd';
 import {
 	Counter,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { TIngredient } from '@/utils/types';
-import { IngredientDetails } from '../ingredient-details/ingredient-details';
+import { setCurrentIngredient } from '@/services/current-ingredient/reducer';
 import styles from './ingredients-list-item.module.css';
-import { useModalVisible } from '@/hooks/use-modal-visible';
 
 type TIngredientsItemProps = {
 	counter: number;
 	ingredient: TIngredient;
-	selectIngredient: (ingredient: TIngredient) => void;
 };
 
 export const IngredientsListItem = ({
 	counter,
 	ingredient,
-	selectIngredient,
 }: TIngredientsItemProps): React.JSX.Element => {
-	const [isOpen, open, close] = useModalVisible(false, {
-		onOpen: () => selectIngredient(ingredient),
+	const dispatch = useDispatch();
+
+	const handleSelectIngredient = () => {
+		dispatch(setCurrentIngredient(ingredient));
+	};
+
+	const [{ opacity }, ref] = useDrag({
+		type: 'ingredients',
+		item: ingredient,
+		collect: (monitor) => ({
+			opacity: monitor.isDragging() ? 0.5 : 1,
+		}),
 	});
 
 	return (
 		<>
-			<li className={styles.ingredient}>
+			<li className={`${styles.ingredient}`} ref={ref} style={{ opacity }}>
 				{!!counter && (
 					<Counter count={counter} size='default' extraClass='m-1' />
 				)}
@@ -46,10 +55,10 @@ export const IngredientsListItem = ({
 					{ingredient.name}
 				</h3>
 
-				<button className={styles.ingredient_button} onClick={open}></button>
+				<button
+					className={styles.ingredient_button}
+					onClick={handleSelectIngredient}></button>
 			</li>
-
-			{isOpen && <IngredientDetails details={ingredient} onClose={close} />}
 		</>
 	);
 };

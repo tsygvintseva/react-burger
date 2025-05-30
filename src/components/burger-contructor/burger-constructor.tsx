@@ -1,98 +1,118 @@
+import { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useDrop } from 'react-dnd';
 import {
 	Button,
-	ConstructorElement,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { EIngredientType } from '@/utils/enums';
-import { TIngredient } from '@utils/types.ts';
 import { useModalVisible } from '@/hooks/use-modal-visible';
+import {
+	addIngredient,
+	clearConstructorData,
+	getConstructorData,
+	removeIngredient,
+} from '@/services/constructor-data/reducer';
+import { useCreateOrderMutation } from '@/services/orders/api';
+import { TIngredient, TOrder } from '@/utils/types';
 import styles from './burger-constructor.module.css';
-import { ConstructorDragList } from './constructor-drag-list/constructor-drag-list';
+import { ConstructorList } from './constructor-list/constructor-list';
 import { OrderDetails } from './order-details/order-details';
 
-export type TBurgerConstructorProps = {
-	ingredients: TIngredient[];
-	handleClose: (index: number) => void;
-};
+export const BurgerConstructor = (): React.JSX.Element => {
+	const [orderData, setOrderData] = useState<TOrder['order'] | null>(null);
 
-export const BurgerConstructor = ({
-	ingredients,
-	handleClose,
-}: TBurgerConstructorProps): React.JSX.Element => {
 	const [isOpen, open, close] = useModalVisible();
 
-	const bun = ingredients.find((item) => item.type === EIngredientType.Bun);
-	const middle = ingredients.filter(
-		(item) => item.type !== EIngredientType.Bun
-	);
+	const [createOrder] = useCreateOrderMutation();
 
-	const totalPrice = ingredients.reduce((sum, item) => {
-		const bunBonus = item.type === EIngredientType.Bun ? item.price : 0;
+	const dispatch = useDispatch();
 
-		return sum + item.price + bunBonus;
-	}, 0);
+	const constructorData = useSelector(getConstructorData);
+
+	const totalPrice = useMemo(() => {
+		return constructorData.reduce((sum, item) => sum + item.price, 0);
+	}, [constructorData]);
+
+	const [{ isHover }, dropTarget] = useDrop<
+		TIngredient,
+		void,
+		{ isHover: boolean }
+	>({
+		accept: 'ingredients',
+		collect: (monitor) => ({
+			isHover: monitor.isOver(),
+		}),
+		drop(item: TIngredient) {
+			dispatch(addIngredient(item));
+		},
+	});
+
+	const handleUnSelectIngredient = (key: string) => {
+		dispatch(removeIngredient(key));
+	};
+
+	const handleClick = () => {
+		const ids = constructorData.map((item) => item._id);
+		createOrder({ ingredients: ids })
+			.unwrap()
+			.then(({ order }) => {
+				setOrderData(order);
+				open();
+
+				dispatch(clearConstructorData());
+			});
+	};
 
 	return (
 		<>
 			<section>
-				{ingredients.length ? (
+				{constructorData.length ? (
 					<>
-						<div className={`${styles.constructor} ml-4 mr-4 mb-10`}>
-							{bun && (
-								<ConstructorElement
-									type='top'
-									isLocked={true}
-									text={`${bun.name} (верх)`}
-									price={bun.price}
-									thumbnail={bun.image}
+						<div
+							ref={dropTarget}
+							className={` ${styles.constructor} ${isHover ? styles.bounce : ''} ml-4 mr-4 mb-10`}>
+							{
+								<ConstructorList
+									ingredients={constructorData}
+									onClose={handleUnSelectIngredient}
 								/>
-							)}
-
-							<ConstructorDragList
-								ingredients={middle}
-								handleClose={handleClose}
-							/>
-
-							{bun && (
-								<ConstructorElement
-									type='bottom'
-									isLocked={true}
-									text={`${bun.name} (низ)`}
-									price={bun.price}
-									thumbnail={bun.image}
-								/>
-							)}
+							}
 						</div>
 
-						{bun && !!middle.length && (
-							<div className={`${styles.footer} mr-4`}>
-								<p className='text text_type_digits-medium'>
-									<span className='mr-2'>{totalPrice}</span>
-									<CurrencyIcon
-										type='primary'
-										className=' text_type_digits-large'
-									/>
-								</p>
-
-								<Button
-									htmlType='button'
+						<div className={`${styles.footer} mr-4`}>
+							<p className='text text_type_digits-medium'>
+								<span className='mr-2'>{totalPrice}</span>
+								<CurrencyIcon
 									type='primary'
-									size='large'
-									onClick={open}>
-									Оформить заказ
-								</Button>
-							</div>
-						)}
+									className=' text_type_digits-large'
+								/>
+							</p>
+
+							<Button
+								htmlType='button'
+								type='primary'
+								size='large'
+								onClick={handleClick}>
+								Оформить заказ
+							</Button>
+						</div>
 					</>
 				) : (
-					<p className='text text_type_main-default'>
-						🚀 Ваш бургер ещё не собран. Добавьте булку, соусы и начинки.
-					</p>
+					<div
+						ref={dropTarget}
+						className={`${styles.empty} ${isHover ? styles.bounce : ''}`}>
+						<p
+							className={`${isHover ? styles.bounce : ''} text text_type_main-default`}>
+							🚀 Ваш бургер ещё не собран. Перетащите булку, соусы и начинки.
+						</p>
+					</div>
 				)}
 			</section>
 
-			{isOpen && <OrderDetails onClose={close} />}
+			{isOpen && (
+				<OrderDetails orderNumber={orderData?.number} onClose={close} />
+			)}
 		</>
 	);
 };

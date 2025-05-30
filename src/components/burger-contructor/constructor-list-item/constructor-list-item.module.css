@@ -1,11 +1,9 @@
 .ingredient {
+	position: relative;
 	display: flex;
 	justify-content: end;
 	align-items: center;
 	width: 100%;
 	column-gap: 8px;
-}
-
-.icon {
 	cursor: pointer;
 }

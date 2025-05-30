@@ -1,5 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
+import { getConstructorData } from '@/services/constructor-data/reducer';
 import { EIngredientType } from '@/utils/enums';
 import { TIngredient } from '@/utils/types';
 import { IngredientsListItem } from '../ingredients-list-item/ingredients-list-item';
@@ -8,18 +10,16 @@ import styles from './ingredients-list.module.css';
 type TIngredientsListProps = {
 	type: EIngredientType;
 	activeTab: string;
-	orderList: TIngredient[];
 	ingredients: TIngredient[];
-	selectIngredient: (ingredient: TIngredient) => void;
 };
 
 export const IngredientsList = ({
 	type,
 	activeTab,
-	orderList,
 	ingredients,
-	selectIngredient,
 }: TIngredientsListProps): React.JSX.Element => {
+	const constructorData = useSelector(getConstructorData);
+
 	const sectionRef = useRef<HTMLElement>(null);
 
 	useEffect(() => {
@@ -39,22 +39,26 @@ export const IngredientsList = ({
 		}
 	};
 
-	const getCountInOrder = (item: TIngredient) => {
-		const counter = orderList.filter((row) => row._id === item._id).length;
+	const counters = useMemo(() => {
+		const counters: Record<string, number> = {};
+		constructorData.forEach((item) => {
+			counters[item._id] = (counters[item._id] || 0) + 1;
+		});
 
-		return counter ?? 0;
-	};
+		return counters;
+	}, [constructorData]);
 
 	return (
 		<section ref={sectionRef}>
-			<h2 className='text text_type_main-medium'>{getListName(type)}</h2>
+			<h2 className='text text_type_main-medium' data-type={type}>
+				{getListName(type)}
+			</h2>
 			<ul className={`${styles.list} pl-4`}>
 				{ingredients.map((item) => (
 					<IngredientsListItem
 						key={item._id}
 						ingredient={item}
-						counter={getCountInOrder(item)}
-						selectIngredient={selectIngredient}
+						counter={counters[item._id] ?? 0}
 					/>
 				))}
 			</ul>
