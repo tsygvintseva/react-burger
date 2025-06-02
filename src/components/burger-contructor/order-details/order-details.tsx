@@ -3,17 +3,19 @@ import doneImage from '@/images/done.png';
 import styles from './order-details.module.css';
 
 type TOrderDetailsProps = {
+	orderNumber?: number;
 	onClose: () => void;
 };
 
 export const OrderDetails = ({
+	orderNumber,
 	onClose,
 }: TOrderDetailsProps): React.JSX.Element => {
 	return (
 		<Modal onClose={onClose}>
 			<div className={`${styles.content} pt-4 pb-20`}>
 				<p className={`${styles.number} text text_type_digits-large mb-8`}>
-					034536
+					{orderNumber}
 				</p>
 
 				<p className='text text_type_main-medium mb-15'>идентификатор заказа</p>

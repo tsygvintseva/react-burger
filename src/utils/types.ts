@@ -14,3 +14,14 @@ export type TIngredient = {
 	image_mobile: string;
 	__v: number;
 };
+
+export type TIngredientUniq = TIngredient & {
+	key: string;
+};
+
+export type TOrder = {
+	name: string;
+	order: {
+		number: number;
+	};
+};
