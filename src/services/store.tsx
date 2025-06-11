@@ -4,12 +4,14 @@ import { ingredientsApi } from './ingredients/api';
 import { currentIngredientSlice } from './current-ingredient/reducer';
 import { constructorDataSlice } from './constructor-data/reducer';
 import { ordersApi } from './orders/api';
+import { authApi } from './auth/api';
 
 const rootReducer = combineSlices(
 	ingredientsApi,
 	currentIngredientSlice,
 	constructorDataSlice,
-	ordersApi
+	ordersApi,
+	authApi
 );
 
 export const configureStore = () => {
@@ -19,7 +21,8 @@ export const configureStore = () => {
 		middleware: (getDefaultMiddleware) =>
 			getDefaultMiddleware().concat(
 				ingredientsApi.middleware,
-				ordersApi.middleware
+				ordersApi.middleware,
+				authApi.middleware
 			),
 	});
 };

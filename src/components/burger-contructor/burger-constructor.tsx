@@ -61,6 +61,9 @@ export const BurgerConstructor = (): React.JSX.Element => {
 				open();
 
 				dispatch(clearConstructorData());
+			})
+			.catch((error) => {
+				console.error('Ошибка при создании заказа:', error);
 			});
 	};
 

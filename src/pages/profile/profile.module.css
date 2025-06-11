@@ -1,0 +1,28 @@
+.main {
+	display: flex;
+	width: 1240px;
+	height: 100%;
+	margin: 0 auto;
+	margin-top: 120px;
+	overflow: hidden;
+	column-gap: 60px;
+}
+
+.nav {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 80px;
+}
+
+.link {
+	height: 64px;
+	text-decoration: none;
+}
+
+.active {
+	color: var(--text-primary-color);
+}
+
+.help {
+	opacity: 0.4;
+}

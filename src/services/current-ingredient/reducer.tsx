@@ -17,7 +17,6 @@ export const currentIngredientSlice = createSlice({
 	initialState,
 	selectors: {
 		getCurrentIngredient: (state) => state.currentIngredient,
-		getHoveredIngredientId: (state) => state.hoveredIngredientId,
 	},
 	reducers: {
 		setCurrentIngredient: {
@@ -38,5 +37,4 @@ export const currentIngredientSlice = createSlice({
 
 export const { setCurrentIngredient, clearCurrentIngredient } =
 	currentIngredientSlice.actions;
-export const { getCurrentIngredient, getHoveredIngredientId } =
-	currentIngredientSlice.selectors;
+export const { getCurrentIngredient } = currentIngredientSlice.selectors;

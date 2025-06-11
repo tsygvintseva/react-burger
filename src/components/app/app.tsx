@@ -1,26 +1,33 @@
 import React from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import styles from './app.module.css';
+import { Routes, Route } from 'react-router-dom';
 
-import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients.tsx';
-import { BurgerConstructor } from '@components/burger-contructor/burger-constructor.tsx';
-import { AppHeader } from '@components/app-header/app-header.tsx';
+import { AppHeader } from '@components/app-header/app-header';
+import { HomePage } from '@/pages/home/home';
+import { LoginPage } from '@/pages/auth/login/login';
+import { RegisterPage } from '@/pages/auth/register/register';
+import { ForgotPasswordPage } from '@/pages/auth/forgot-password/forgot-password';
+import { ResetPasswordPage } from '@/pages/auth/reset-password/reset-password';
+import { ProfilePage } from '@/pages/profile/profile';
+import { OrdersPage } from '@/pages/profile/orders/orders';
+import { ProfileEdit } from '../profile-edit/profile-edit';
 
 export const App = (): React.JSX.Element => {
 	return (
-		<div className={styles.app}>
+		<>
 			<AppHeader />
-			<h1
-				className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
-				Соберите бургер
-			</h1>
-			<main className={`${styles.main} pl-5 pr-5`}>
-				<DndProvider backend={HTML5Backend}>
-					<BurgerIngredients />
-					<BurgerConstructor />
-				</DndProvider>
-			</main>
-		</div>
+
+			<Routes>
+				<Route path='/login' element={<LoginPage />} />
+				<Route path='/register' element={<RegisterPage />} />
+				<Route path='/forgot-password' element={<ForgotPasswordPage />} />
+				<Route path='/reset-password' element={<ResetPasswordPage />} />
+
+				<Route path='/profile' element={<ProfilePage />}>
+					<Route index element={<ProfileEdit />} />
+					<Route path='orders' element={<OrdersPage />} />
+				</Route>
+				<Route path='/' element={<HomePage />} />
+			</Routes>
+		</>
 	);
 };
