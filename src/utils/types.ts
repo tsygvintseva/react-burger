@@ -25,3 +25,8 @@ export type TOrder = {
 		number: number;
 	};
 };
+
+export type ErrorResponse = {
+	success: false;
+	message: string;
+};

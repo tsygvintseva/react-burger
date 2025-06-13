@@ -6,8 +6,7 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import styles from './forgot-password.module.css';
-
-const FORGOT_PASSWORD = 'https://norma.nomoreparties.space/api/password-reset';
+import { requestForgotPassword } from '@/utils/api';
 
 export const ForgotPasswordPage = (): React.JSX.Element => {
 	const navigate = useNavigate();
@@ -20,32 +19,18 @@ export const ForgotPasswordPage = (): React.JSX.Element => {
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		const resetPassword = async () => {
+		const forgotPassword = async () => {
 			try {
-				const res = await fetch(FORGOT_PASSWORD, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						email,
-					}),
-				});
+				await requestForgotPassword(email);
 
-				const data = await res.json();
-
-				if (data.success) goTo('/reset-password');
-				else {
-					throw new Error(
-						`Ошибка восстановления пароля: ${res.status} ${data.message}`
-					);
-				}
+				localStorage.setItem('resetPassword', 'true');
+				goTo('/reset-password');
 			} catch (error) {
-				console.error('Ошибка восстановления пароля:', error);
+				console.error('Не удалось отправить email:', error);
 			}
 		};
 
-		resetPassword();
+		forgotPassword();
 	};
 
 	const goTo = (url: string) => {

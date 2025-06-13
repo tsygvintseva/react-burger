@@ -1,7 +1,7 @@
 .app {
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
+	height: calc(100vh - 88px);
 	overflow: hidden;
 	color: var(--text-primary-color);
 	background-color: var(--background-alt);

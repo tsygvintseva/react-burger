@@ -15,8 +15,14 @@
 }
 
 .link {
+	display: flex;
+	align-items: center;
 	height: 64px;
+	text-align: start;
 	text-decoration: none;
+	background: none;
+	border: none;
+	cursor: pointer;
 }
 
 .active {

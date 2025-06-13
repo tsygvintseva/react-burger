@@ -1,8 +1,8 @@
-import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { BASE_URL } from '@/utils/const';
 import { TOrder } from '@/utils/types';
+import { baseQueryRefreshToken } from '@/utils/base-query';
 
 export const ordersApiConfig = {
 	baseUrl: BASE_URL,
@@ -17,17 +17,14 @@ type CreateOrderPayload = {
 
 export const ordersApi = createApi({
 	reducerPath: 'ordersApi',
-	baseQuery: fetchBaseQuery({
+	baseQuery: baseQueryRefreshToken({
 		baseUrl: ordersApiConfig.baseUrl,
-		prepareHeaders: (headers) => {
-			headers.set('Content-Type', ordersApiConfig.headers['Content-Type']);
-			return headers;
-		},
+		contentType: ordersApiConfig.headers['Content-Type'],
 	}),
 	tagTypes: ['Orders'],
 	endpoints: (builder) => ({
 		createOrder: builder.mutation<TOrder, CreateOrderPayload>({
-			query: (body) => ({
+			query: (body: CreateOrderPayload) => ({
 				url: '/orders',
 				method: 'POST',
 				body,

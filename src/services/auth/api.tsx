@@ -1,7 +1,7 @@
-import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { BASE_URL } from '@/utils/const';
+import { baseQueryRefreshToken } from '@/utils/base-query';
 
 export const authApiConfig = {
 	baseUrl: BASE_URL + '/auth',
@@ -33,6 +33,12 @@ type LogoutResponse = {
 	message: string;
 };
 
+type UserRequest = {
+	email: string;
+	password: string;
+	name: string;
+};
+
 type UserResponse = {
 	success: boolean;
 	user: {
@@ -43,12 +49,9 @@ type UserResponse = {
 
 export const authApi = createApi({
 	reducerPath: 'authApi',
-	baseQuery: fetchBaseQuery({
+	baseQuery: baseQueryRefreshToken({
 		baseUrl: authApiConfig.baseUrl,
-		prepareHeaders: (headers) => {
-			headers.set('Content-Type', authApiConfig.headers['Content-Type']);
-			return headers;
-		},
+		contentType: authApiConfig.headers['Content-Type'],
 	}),
 	tagTypes: ['Auth'],
 	endpoints: (builder) => ({
@@ -68,7 +71,7 @@ export const authApi = createApi({
 			}),
 			invalidatesTags: [{ type: 'Auth', id: 'LOGIN' }],
 		}),
-		logout: builder.mutation<LogoutResponse, void>({
+		logout: builder.mutation<LogoutResponse, { token: string }>({
 			query: (body) => ({
 				url: '/logout',
 				method: 'POST',
@@ -80,10 +83,10 @@ export const authApi = createApi({
 			query: () => '/user',
 			providesTags: () => [{ type: 'Auth', id: 'GET_USER' }],
 		}),
-		changeUser: builder.mutation<UserResponse, void>({
+		updateUser: builder.mutation<UserResponse, UserRequest>({
 			query: (body) => ({
 				url: '/user',
-				method: 'POST',
+				method: 'PATCH',
 				body,
 			}),
 			invalidatesTags: [{ type: 'Auth', id: 'CHANGE_USER' }],
@@ -96,5 +99,5 @@ export const {
 	useLoginMutation,
 	useLogoutMutation,
 	useGetUserQuery,
-	useChangeUserMutation,
+	useUpdateUserMutation,
 } = authApi;

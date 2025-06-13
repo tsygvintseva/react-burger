@@ -18,15 +18,17 @@ import { TIngredient, TOrder } from '@/utils/types';
 import styles from './burger-constructor.module.css';
 import { ConstructorList } from './constructor-list/constructor-list';
 import { OrderDetails } from './order-details/order-details';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor = (): React.JSX.Element => {
 	const [orderData, setOrderData] = useState<TOrder['order'] | null>(null);
 
 	const [isOpen, open, close] = useModalVisible();
 
-	const [createOrder] = useCreateOrderMutation();
+	const [createOrder, { isLoading }] = useCreateOrderMutation();
 
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const constructorData = useSelector(getConstructorData);
 
@@ -53,18 +55,24 @@ export const BurgerConstructor = (): React.JSX.Element => {
 	};
 
 	const handleClick = () => {
-		const ids = constructorData.map((item) => item._id);
-		createOrder({ ingredients: ids })
-			.unwrap()
-			.then(({ order }) => {
-				setOrderData(order);
-				open();
+		const token = localStorage.getItem('accessToken');
 
-				dispatch(clearConstructorData());
-			})
-			.catch((error) => {
-				console.error('Ошибка при создании заказа:', error);
-			});
+		if (!token) navigate('/login', { replace: true });
+		else {
+			open();
+
+			const ids = constructorData.map((item) => item._id);
+			createOrder({ ingredients: ids })
+				.unwrap()
+				.then(({ order }) => {
+					setOrderData(order);
+
+					dispatch(clearConstructorData());
+				})
+				.catch((error) => {
+					console.error('Ошибка при создании заказа:', error);
+				});
+		}
 	};
 
 	return (
@@ -114,7 +122,11 @@ export const BurgerConstructor = (): React.JSX.Element => {
 			</section>
 
 			{isOpen && (
-				<OrderDetails orderNumber={orderData?.number} onClose={close} />
+				<OrderDetails
+					isLoading={isLoading}
+					orderNumber={orderData?.number}
+					onClose={close}
+				/>
 			)}
 		</>
 	);

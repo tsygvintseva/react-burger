@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import {
 	Button,
 	EmailInput,
@@ -7,6 +7,7 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import styles from './profile-edit.module.css';
+import { useGetUserQuery, useUpdateUserMutation } from '@/services/auth/api';
 
 export const ProfileEdit = (): React.JSX.Element => {
 	const [state, setState] = useState({
@@ -14,6 +15,25 @@ export const ProfileEdit = (): React.JSX.Element => {
 		email: '',
 		password: '',
 	});
+
+	const [isValueChanged, setValueChanged] = useState(false);
+	const formRef = useRef<HTMLFormElement>(null);
+
+	const { data } = useGetUserQuery();
+	const [updateUser] = useUpdateUserMutation();
+
+	useEffect(() => {
+		if (!data) return;
+
+		const { success, user } = data;
+
+		if (success) {
+			setState((prev) => ({
+				...prev,
+				...user,
+			}));
+		}
+	}, [data]);
 
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const target = event.target;
@@ -23,15 +43,26 @@ export const ProfileEdit = (): React.JSX.Element => {
 			...state,
 			[name]: value,
 		});
+
+		setValueChanged(true);
 	};
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+
+		updateUser({ ...state })
+			.unwrap()
+			.then(() => {})
+			.catch((error) => {
+				console.error('Не удалось обновить данные о пользователе', error);
+			});
+		setValueChanged(false);
 	};
 
 	return (
-		<form className={styles.form} onSubmit={handleSubmit}>
+		<form ref={formRef} className={styles.form} onSubmit={handleSubmit}>
 			<Input
+				required
 				value={state.name}
 				type={'text'}
 				name={'name'}
@@ -41,6 +72,7 @@ export const ProfileEdit = (): React.JSX.Element => {
 			/>
 
 			<EmailInput
+				required
 				value={state.email}
 				name={'email'}
 				placeholder='Логин'
@@ -48,6 +80,7 @@ export const ProfileEdit = (): React.JSX.Element => {
 				onChange={onChange}
 			/>
 			<PasswordInput
+				required
 				value={state.password}
 				name={'password'}
 				placeholder='Пароль'
@@ -55,14 +88,16 @@ export const ProfileEdit = (): React.JSX.Element => {
 				onChange={onChange}
 			/>
 
-			<div className={styles.footer}>
-				<Button htmlType='button' type='secondary' size='medium'>
-					Отмена
-				</Button>
-				<Button htmlType='submit' type='primary' size='medium'>
-					Сохранить
-				</Button>
-			</div>
+			{isValueChanged && (
+				<div className={styles.footer}>
+					<Button htmlType='button' type='secondary' size='medium'>
+						Отмена
+					</Button>
+					<Button htmlType='submit' type='primary' size='medium'>
+						Сохранить
+					</Button>
+				</div>
+			)}
 		</form>
 	);
 };

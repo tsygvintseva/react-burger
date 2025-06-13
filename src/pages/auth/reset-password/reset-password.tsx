@@ -7,9 +7,7 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import styles from './reset-password.module.css';
-
-const PASSWORD_RESET =
-	'https://norma.nomoreparties.space/api/password-reset/reset';
+import { requestResetPassword } from '@/utils/api';
 
 export const ResetPasswordPage = (): React.JSX.Element => {
 	const navigate = useNavigate();
@@ -33,26 +31,12 @@ export const ResetPasswordPage = (): React.JSX.Element => {
 
 		const resetPassword = async () => {
 			try {
-				const res = await fetch(PASSWORD_RESET, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						...state,
-					}),
-				});
+				await requestResetPassword(state);
 
-				const data = await res.json();
-
-				if (data.success) goTo('/');
-				else {
-					throw new Error(
-						`Ошибка восстановления пароля: ${res.status} ${data.message}`
-					);
-				}
+				localStorage.removeItem('resetPassword');
+				goTo('/login');
 			} catch (error) {
-				console.error('Ошибка восстановления пароля:', error);
+				console.error('Не удалось восстановить пароль:', error);
 			}
 		};
 

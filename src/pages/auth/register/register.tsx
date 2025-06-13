@@ -9,12 +9,8 @@ import {
 
 import styles from './register.module.css';
 import { useRegisterMutation } from '@/services/auth/api';
-import { useLocalStorage } from '@/hooks/use-local-storage';
 
 export const RegisterPage = (): React.JSX.Element => {
-	const [, setAccessToken] = useLocalStorage<string>('accessToken', '');
-	const [, setRefreshTokens] = useLocalStorage<string>('refreshToken', '');
-
 	const navigate = useNavigate();
 	const [state, setState] = useState({
 		name: '',
@@ -40,13 +36,13 @@ export const RegisterPage = (): React.JSX.Element => {
 		register({ ...state })
 			.unwrap()
 			.then(({ accessToken, refreshToken }) => {
-				setAccessToken(accessToken);
-				setRefreshTokens(refreshToken);
+				localStorage.setItem('accessToken', accessToken);
+				localStorage.setItem('refreshToken', refreshToken);
 
 				goTo('/');
 			})
 			.catch((error) => {
-				console.error('Ошибка при регистрации', error);
+				console.error('Не удалось зарегистрироваться:', error);
 			});
 	};
 

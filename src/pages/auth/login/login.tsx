@@ -8,12 +8,8 @@ import {
 
 import styles from './login.module.css';
 import { useLoginMutation } from '@/services/auth/api';
-import { useLocalStorage } from '@/hooks/use-local-storage';
 
 export const LoginPage = (): React.JSX.Element => {
-	const [, setAccessToken] = useLocalStorage<string>('accessToken', '');
-	const [, setRefreshTokens] = useLocalStorage<string>('refreshToken', '');
-
 	const navigate = useNavigate();
 	const [state, setState] = useState({
 		email: '',
@@ -38,13 +34,13 @@ export const LoginPage = (): React.JSX.Element => {
 		login({ ...state })
 			.unwrap()
 			.then(({ accessToken, refreshToken }) => {
-				setAccessToken(accessToken);
-				setRefreshTokens(refreshToken);
+				localStorage.setItem('accessToken', accessToken);
+				localStorage.setItem('refreshToken', refreshToken);
 
 				goTo('/');
 			})
 			.catch((error) => {
-				console.error('Ошибка при входе', error);
+				console.error('Не удалось войти:', error);
 			});
 	};
 
