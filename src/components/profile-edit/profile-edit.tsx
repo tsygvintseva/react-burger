@@ -7,7 +7,9 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import styles from './profile-edit.module.css';
-import { useGetUserQuery, useUpdateUserMutation } from '@/services/user/api';
+import { useEditUserMutation } from '@/services/user/api';
+import { useSelector } from 'react-redux';
+import { getUser } from '@/services/user/reducer';
 
 export const ProfileEdit = (): React.JSX.Element => {
 	const [state, setState] = useState({
@@ -19,43 +21,54 @@ export const ProfileEdit = (): React.JSX.Element => {
 	const [isValueChanged, setValueChanged] = useState(false);
 	const formRef = useRef<HTMLFormElement>(null);
 
-	const { data } = useGetUserQuery();
-	const [updateUser] = useUpdateUserMutation();
+	const user = useSelector(getUser);
+	const [editUser] = useEditUserMutation();
 
 	useEffect(() => {
-		if (!data) return;
+		setState((prev) => ({
+			...prev,
+			...user,
+		}));
 
-		const { success, user } = data;
+		setValueChanged(false);
+	}, [user]);
 
-		if (success) {
-			setState((prev) => ({
-				...prev,
-				...user,
-			}));
-		}
-	}, [data]);
+	useEffect(() => {
+		if (!user) return;
+
+		const changed =
+			user.name !== state.name ||
+			user.email !== state.email ||
+			!!state.password;
+
+		setValueChanged(changed);
+	}, [state, user]);
 
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const target = event.target;
 		const { name, value } = target;
 
-		setState({
-			...state,
+		setState((prev) => ({
+			...prev,
 			[name]: value,
-		});
-
-		setValueChanged(true);
+		}));
 	};
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		updateUser({ ...state })
-			.unwrap()
-			.then(() => setValueChanged(false))
-			.catch((error) => {
-				console.error('Не удалось обновить данные о пользователе', error);
-			});
+		editUser({ ...state }).catch((error) => {
+			console.error('Не удалось обновить данные о пользователе', error);
+		});
+	};
+
+	const handleReset = () => {
+		if (!user) return;
+
+		setState({
+			...user,
+			password: '',
+		});
 	};
 
 	return (
@@ -88,7 +101,11 @@ export const ProfileEdit = (): React.JSX.Element => {
 
 			{isValueChanged && (
 				<div className={styles.footer}>
-					<Button htmlType='button' type='secondary' size='medium'>
+					<Button
+						htmlType='button'
+						type='secondary'
+						size='medium'
+						onClick={handleReset}>
 						Отмена
 					</Button>
 					<Button htmlType='submit' type='primary' size='medium'>

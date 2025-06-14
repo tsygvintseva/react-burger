@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
 	Button,
 	EmailInput,
@@ -11,6 +11,8 @@ import { useLoginMutation } from '@/services/auth/api';
 
 export const LoginPage = (): React.JSX.Element => {
 	const navigate = useNavigate();
+	const location = useLocation();
+
 	const [state, setState] = useState({
 		email: '',
 		password: '',
@@ -37,7 +39,9 @@ export const LoginPage = (): React.JSX.Element => {
 				localStorage.setItem('accessToken', accessToken);
 				localStorage.setItem('refreshToken', refreshToken);
 
-				goTo('/');
+				const from = location.state.from.pathname || '/';
+
+				goTo(from);
 			})
 			.catch((error) => {
 				console.error('Не удалось войти:', error);

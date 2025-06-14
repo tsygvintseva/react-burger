@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { BASE_URL } from '@/utils/const';
+import { setUser } from '../user/reducer';
 
 export const authApiConfig = {
 	baseUrl: BASE_URL + '/auth',
@@ -58,6 +59,15 @@ export const authApi = createApi({
 				body,
 			}),
 			invalidatesTags: [{ type: 'Auth', id: 'LOGIN' }],
+
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {
+					const { data } = await queryFulfilled;
+					dispatch(setUser(data.user));
+				} catch {
+					// intentionally left blank
+				}
+			},
 		}),
 		logout: builder.mutation<LogoutResponse, { token: string }>({
 			query: (body) => ({
@@ -66,6 +76,15 @@ export const authApi = createApi({
 				body,
 			}),
 			invalidatesTags: [{ type: 'Auth', id: 'LOGOUT' }],
+
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {
+					await queryFulfilled;
+					dispatch(setUser(null));
+				} catch {
+					// intentionally left blank
+				}
+			},
 		}),
 	}),
 });

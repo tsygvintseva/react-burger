@@ -5,13 +5,15 @@ import { constructorDataSlice } from './constructor-data/reducer';
 import { ordersApi } from './orders/api';
 import { authApi } from './auth/api';
 import { userApi } from './user/api';
+import { userSlice } from './user/reducer';
 
 const rootReducer = combineSlices(
 	ingredientsApi,
 	constructorDataSlice,
 	ordersApi,
 	authApi,
-	userApi
+	userApi,
+	userSlice
 );
 
 export const configureStore = () => {

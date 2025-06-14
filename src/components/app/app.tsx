@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import styles from './app.module.css';
 
@@ -17,8 +17,25 @@ import { IngredientsDetails } from '../burger-ingredients/ingredients-details/in
 import { Modal } from '../modal/modal';
 import { Preloader } from '../preloader/preloader';
 import { IngredientsPage } from '@/pages/ingredients-page/ingredients-page';
+import { OnlyAuth, OnlyUnAuth } from './protected-route';
+import { useDispatch } from 'react-redux';
+import { useLazyGetUserQuery } from '@/services/user/api';
+import { setIsAuthChecked } from '@/services/user/reducer';
 
 export const App = (): React.JSX.Element => {
+	const dispatch = useDispatch();
+	const [triggerGetUser] = useLazyGetUserQuery();
+
+	useEffect(() => {
+		const token = localStorage.getItem('accessToken');
+
+		if (token) {
+			triggerGetUser();
+		} else {
+			dispatch(setIsAuthChecked(true));
+		}
+	}, [dispatch, triggerGetUser]);
+
 	const { isLoading } = useGetIngredientsQuery();
 
 	const location = useLocation();
@@ -55,12 +72,23 @@ export const App = (): React.JSX.Element => {
 						)}
 
 						<Routes location={background || location}>
-							<Route path='/login' element={<LoginPage />} />
-							<Route path='/register' element={<RegisterPage />} />
+							<Route
+								path='/login'
+								element={<OnlyUnAuth component={<LoginPage />} />}
+							/>
+							<Route
+								path='/register'
+								element={<OnlyUnAuth component={<RegisterPage />} />}
+							/>
 							<Route path='/forgot-password' element={<ForgotPasswordPage />} />
-							<Route path='/reset-password' element={<ResetPasswordPage />} />
+							<Route
+								path='/reset-password'
+								element={<OnlyUnAuth component={<ResetPasswordPage />} />}
+							/>
 
-							<Route path='/profile' element={<ProfilePage />}>
+							<Route
+								path='/profile'
+								element={<OnlyAuth component={<ProfilePage />} />}>
 								<Route index element={<ProfileEdit />} />
 								<Route path='orders' element={<OrdersPage />} />
 							</Route>
