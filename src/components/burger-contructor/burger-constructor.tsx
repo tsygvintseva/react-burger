@@ -25,7 +25,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 
 	const [isOpen, open, close] = useModalVisible();
 
-	const [createOrder, { isLoading }] = useCreateOrderMutation();
+	const [createOrder, { isLoading, isSuccess }] = useCreateOrderMutation();
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -70,7 +70,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 					dispatch(clearConstructorData());
 				})
 				.catch((error) => {
-					console.error('Ошибка при создании заказа:', error);
+					console.error('Не удалось оформить заказ:', error);
 				});
 		}
 	};
@@ -114,8 +114,9 @@ export const BurgerConstructor = (): React.JSX.Element => {
 						ref={dropTarget}
 						className={`${styles.empty} ${isHover ? styles.bounce : ''}`}>
 						<p
-							className={`${isHover ? styles.bounce : ''} text text_type_main-default`}>
-							🚀 Ваш бургер ещё не собран. Перетащите булку, соусы и начинки.
+							className={`${isHover ? styles.bounce : ''} text text_type_main-default text_color_inactive`}>
+							🚀 Ваш бургер ещё не собран.
+							<br /> Перетащите булку, соусы и начинки.
 						</p>
 					</div>
 				)}
@@ -124,6 +125,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 			{isOpen && (
 				<OrderDetails
 					isLoading={isLoading}
+					isSuccess={isSuccess}
 					orderNumber={orderData?.number}
 					onClose={close}
 				/>

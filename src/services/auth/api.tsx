@@ -1,7 +1,6 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { BASE_URL } from '@/utils/const';
-import { baseQueryRefreshToken } from '@/utils/base-query';
 
 export const authApiConfig = {
 	baseUrl: BASE_URL + '/auth',
@@ -33,25 +32,14 @@ type LogoutResponse = {
 	message: string;
 };
 
-type UserRequest = {
-	email: string;
-	password: string;
-	name: string;
-};
-
-type UserResponse = {
-	success: boolean;
-	user: {
-		email: string;
-		name: string;
-	};
-};
-
 export const authApi = createApi({
 	reducerPath: 'authApi',
-	baseQuery: baseQueryRefreshToken({
+	baseQuery: fetchBaseQuery({
 		baseUrl: authApiConfig.baseUrl,
-		contentType: authApiConfig.headers['Content-Type'],
+		prepareHeaders: (headers) => {
+			headers.set('Content-Type', authApiConfig.headers['Content-Type']);
+			return headers;
+		},
 	}),
 	tagTypes: ['Auth'],
 	endpoints: (builder) => ({
@@ -79,25 +67,8 @@ export const authApi = createApi({
 			}),
 			invalidatesTags: [{ type: 'Auth', id: 'LOGOUT' }],
 		}),
-		getUser: builder.query<UserResponse, void>({
-			query: () => '/user',
-			providesTags: () => [{ type: 'Auth', id: 'GET_USER' }],
-		}),
-		updateUser: builder.mutation<UserResponse, UserRequest>({
-			query: (body) => ({
-				url: '/user',
-				method: 'PATCH',
-				body,
-			}),
-			invalidatesTags: [{ type: 'Auth', id: 'CHANGE_USER' }],
-		}),
 	}),
 });
 
-export const {
-	useRegisterMutation,
-	useLoginMutation,
-	useLogoutMutation,
-	useGetUserQuery,
-	useUpdateUserMutation,
-} = authApi;
+export const { useRegisterMutation, useLoginMutation, useLogoutMutation } =
+	authApi;

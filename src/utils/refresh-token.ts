@@ -1,6 +1,7 @@
 import { BaseQueryFn, fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { refreshToken } from './api';
 import { ErrorResponse } from './types';
+import { authApi } from '@/services/auth/api';
 
 interface CreateBaseQueryOptions {
 	baseUrl: string;
@@ -37,7 +38,16 @@ export const baseQueryRefreshToken = ({
 
 				result = await baseQuery(args, api, extraOptions);
 			} catch (err) {
-				api.dispatch({ type: 'auth/logout' });
+				const refreshToken = localStorage.getItem('refreshToken');
+
+				if (refreshToken) {
+					await api.dispatch(
+						authApi.endpoints.logout.initiate({ token: refreshToken })
+					);
+
+					localStorage.removeItem('accessToken');
+					localStorage.removeItem('refreshToken');
+				}
 			}
 		}
 

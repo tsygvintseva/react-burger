@@ -5,12 +5,14 @@ import { Preloader } from '@/components/preloader/preloader';
 
 type TOrderDetailsProps = {
 	isLoading: boolean;
+	isSuccess: boolean;
 	orderNumber?: number;
 	onClose: () => void;
 };
 
 export const OrderDetails = ({
 	isLoading,
+	isSuccess,
 	orderNumber,
 	onClose,
 }: TOrderDetailsProps): React.JSX.Element => {
@@ -18,8 +20,13 @@ export const OrderDetails = ({
 		<Modal onClose={onClose}>
 			<div className={`${styles.content} pt-4 pb-20`}>
 				{isLoading ? (
-					<Preloader />
-				) : (
+					<>
+						<Preloader />
+						<p className='text text_type_main-medium mt-10'>
+							Оформляем ваш заказ...
+						</p>
+					</>
+				) : isSuccess ? (
 					<>
 						<p className={`${styles.number} text text_type_digits-large mb-8`}>
 							{orderNumber}
@@ -30,16 +37,20 @@ export const OrderDetails = ({
 						</p>
 
 						<img src={doneImage} alt='Заказ подтвержден' />
-					</>
-				)}
 
-				<p
-					className={`${styles.description} text text_type_main-default mt-15`}>
-					Ваш заказ начали готовить
-					<span className='text_color_inactive'>
-						Дождитесь готовности на орбитальной станции
-					</span>
-				</p>
+						<p
+							className={`${styles.description} text text_type_main-default mt-15`}>
+							Ваш заказ начали готовить
+							<span className='text_color_inactive'>
+								Дождитесь готовности на орбитальной станции
+							</span>
+						</p>
+					</>
+				) : (
+					<p className='text text_type_main-medium mt-10'>
+						Не удалось оформить заказ. Попробуйте еще раз.
+					</p>
+				)}
 			</div>
 		</Modal>
 	);

@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
 	Button,
 	Input,
@@ -11,6 +11,10 @@ import { requestResetPassword } from '@/utils/api';
 
 export const ResetPasswordPage = (): React.JSX.Element => {
 	const navigate = useNavigate();
+
+	const location = useLocation();
+	const fromForgot = location.state?.fromForgot;
+
 	const [state, setState] = useState({
 		password: '',
 		token: '',
@@ -33,7 +37,6 @@ export const ResetPasswordPage = (): React.JSX.Element => {
 			try {
 				await requestResetPassword(state);
 
-				localStorage.removeItem('resetPassword');
 				goTo('/login');
 			} catch (error) {
 				console.error('Не удалось восстановить пароль:', error);
@@ -46,6 +49,10 @@ export const ResetPasswordPage = (): React.JSX.Element => {
 	const goTo = (url: string) => {
 		navigate(url, { replace: true });
 	};
+
+	if (!fromForgot) {
+		return <Navigate to='/forgot-password' replace />;
+	}
 
 	return (
 		<div className={styles.wrapper}>

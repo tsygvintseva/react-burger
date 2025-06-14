@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { BASE_URL } from '@/utils/const';
 import { TOrder } from '@/utils/types';
-import { baseQueryRefreshToken } from '@/utils/base-query';
+import { baseQueryRefreshToken } from '@/utils/refresh-token';
 
 export const ordersApiConfig = {
 	baseUrl: BASE_URL,

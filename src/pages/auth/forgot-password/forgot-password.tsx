@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavigateOptions, useNavigate } from 'react-router-dom';
 import {
 	Button,
 	EmailInput,
@@ -23,8 +23,7 @@ export const ForgotPasswordPage = (): React.JSX.Element => {
 			try {
 				await requestForgotPassword(email);
 
-				localStorage.setItem('resetPassword', 'true');
-				goTo('/reset-password');
+				goTo('/reset-password', { state: { fromForgot: true } });
 			} catch (error) {
 				console.error('Не удалось отправить email:', error);
 			}
@@ -33,8 +32,13 @@ export const ForgotPasswordPage = (): React.JSX.Element => {
 		forgotPassword();
 	};
 
-	const goTo = (url: string) => {
-		navigate(url, { replace: true });
+	const goTo = (url: string, state?: NavigateOptions['state']) => {
+		const options = {
+			state,
+			replace: true,
+		};
+
+		navigate(url, { ...options });
 	};
 
 	return (

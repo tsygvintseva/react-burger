@@ -1,17 +1,17 @@
 import { combineSlices, configureStore as createStore } from '@reduxjs/toolkit';
 
 import { ingredientsApi } from './ingredients/api';
-import { currentIngredientSlice } from './current-ingredient/reducer';
 import { constructorDataSlice } from './constructor-data/reducer';
 import { ordersApi } from './orders/api';
 import { authApi } from './auth/api';
+import { userApi } from './user/api';
 
 const rootReducer = combineSlices(
 	ingredientsApi,
-	currentIngredientSlice,
 	constructorDataSlice,
 	ordersApi,
-	authApi
+	authApi,
+	userApi
 );
 
 export const configureStore = () => {
@@ -22,7 +22,8 @@ export const configureStore = () => {
 			getDefaultMiddleware().concat(
 				ingredientsApi.middleware,
 				ordersApi.middleware,
-				authApi.middleware
+				authApi.middleware,
+				userApi.middleware
 			),
 	});
 };

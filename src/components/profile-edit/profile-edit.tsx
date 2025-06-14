@@ -7,7 +7,7 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import styles from './profile-edit.module.css';
-import { useGetUserQuery, useUpdateUserMutation } from '@/services/auth/api';
+import { useGetUserQuery, useUpdateUserMutation } from '@/services/user/api';
 
 export const ProfileEdit = (): React.JSX.Element => {
 	const [state, setState] = useState({
@@ -52,11 +52,10 @@ export const ProfileEdit = (): React.JSX.Element => {
 
 		updateUser({ ...state })
 			.unwrap()
-			.then(() => {})
+			.then(() => setValueChanged(false))
 			.catch((error) => {
 				console.error('Не удалось обновить данные о пользователе', error);
 			});
-		setValueChanged(false);
 	};
 
 	return (
@@ -70,7 +69,6 @@ export const ProfileEdit = (): React.JSX.Element => {
 				icon='EditIcon'
 				onChange={onChange}
 			/>
-
 			<EmailInput
 				required
 				value={state.email}

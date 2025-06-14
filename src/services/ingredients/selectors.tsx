@@ -21,3 +21,8 @@ export const selectGroupedIngredients = createSelector(
 		return grouped;
 	}
 );
+
+export const selectIngredientById = (id: string) =>
+	createSelector(ingredientsApi.endpoints.getIngredients.select(), (result) =>
+		result?.data?.find((ingredient) => ingredient._id === id)
+	);
