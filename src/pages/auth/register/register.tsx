@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
 	Button,
@@ -9,10 +9,12 @@ import {
 
 import styles from './register.module.css';
 import { useRegisterMutation } from '@/services/auth/api';
+import { useForm } from '@/hooks/use-form';
 
 export const RegisterPage = (): React.JSX.Element => {
 	const navigate = useNavigate();
-	const [state, setState] = useState({
+
+	const { values, handleChange } = useForm({
 		name: '',
 		email: '',
 		password: '',
@@ -20,26 +22,13 @@ export const RegisterPage = (): React.JSX.Element => {
 
 	const [register] = useRegisterMutation();
 
-	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const target = event.target;
-		const { name, value } = target;
-
-		setState({
-			...state,
-			[name]: value,
-		});
-	};
-
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		register({ ...state })
+		register({ ...values })
 			.unwrap()
-			.then(({ accessToken, refreshToken }) => {
-				localStorage.setItem('accessToken', accessToken);
-				localStorage.setItem('refreshToken', refreshToken);
-
-				goTo('/');
+			.then(() => {
+				goTo('/login');
 			})
 			.catch((error) => {
 				console.error('Не удалось зарегистрироваться:', error);
@@ -57,27 +46,27 @@ export const RegisterPage = (): React.JSX.Element => {
 			<form className={styles.form} onSubmit={handleSubmit}>
 				<Input
 					required
-					value={state.name}
+					value={values.name}
 					type={'text'}
 					name={'name'}
 					placeholder='Имя'
-					onChange={onChange}
+					onChange={handleChange}
 				/>
 
 				<EmailInput
 					required
-					value={state.email}
+					value={values.email}
 					name={'email'}
 					placeholder='E-mail'
 					isIcon={false}
-					onChange={onChange}
+					onChange={handleChange}
 				/>
 				<PasswordInput
 					required
-					value={state.password}
+					value={values.password}
 					name={'password'}
 					placeholder='Пароль'
-					onChange={onChange}
+					onChange={handleChange}
 				/>
 
 				<Button htmlType='submit' type='primary' size='medium'>

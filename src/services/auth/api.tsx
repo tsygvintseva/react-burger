@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { BASE_URL } from '@/utils/const';
 import { setUser } from '../user/reducer';
+import { ApiResponse } from '@/utils/types';
 
 export const authApiConfig = {
 	baseUrl: BASE_URL + '/auth',
@@ -18,20 +19,18 @@ type RegisterRequest = {
 	name: string;
 };
 
-type AuthResponse = {
-	success: boolean;
+type AuthResponse = ApiResponse<{
 	user: {
 		email: string;
 		name: string;
 	};
 	accessToken: string;
 	refreshToken: string;
-};
+}>;
 
-type LogoutResponse = {
-	success: boolean;
+type LogoutResponse = ApiResponse<{
 	message: string;
-};
+}>;
 
 export const authApi = createApi({
 	reducerPath: 'authApi',
@@ -64,6 +63,9 @@ export const authApi = createApi({
 				try {
 					const { data } = await queryFulfilled;
 					dispatch(setUser(data.user));
+
+					localStorage.setItem('accessToken', data.accessToken);
+					localStorage.setItem('refreshToken', data.refreshToken);
 				} catch {
 					// intentionally left blank
 				}
@@ -81,6 +83,9 @@ export const authApi = createApi({
 				try {
 					await queryFulfilled;
 					dispatch(setUser(null));
+
+					localStorage.removeItem('accessToken');
+					localStorage.removeItem('refreshToken');
 				} catch {
 					// intentionally left blank
 				}

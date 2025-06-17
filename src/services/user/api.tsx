@@ -35,7 +35,7 @@ export const userApi = createApi({
 	endpoints: (builder) => ({
 		getUser: builder.query<UserResponse, void>({
 			query: () => '/user',
-			providesTags: () => [{ type: 'Auth', id: 'GET_USER' }],
+			providesTags: () => [{ type: 'Auth', id: 'USER' }],
 
 			async onQueryStarted(_, { dispatch, queryFulfilled }) {
 				try {
@@ -55,7 +55,7 @@ export const userApi = createApi({
 				method: 'PATCH',
 				body,
 			}),
-			invalidatesTags: [{ type: 'Auth', id: 'EDIT_USER' }],
+			invalidatesTags: [{ type: 'Auth', id: 'USER' }],
 
 			async onQueryStarted(_, { dispatch, queryFulfilled }) {
 				try {

@@ -23,7 +23,7 @@ export const ForgotPasswordPage = (): React.JSX.Element => {
 			try {
 				await requestForgotPassword(email);
 
-				goTo('/reset-password', { state: { fromForgot: true } });
+				goTo('/reset-password', { fromForgot: true });
 			} catch (error) {
 				console.error('Не удалось отправить email:', error);
 			}

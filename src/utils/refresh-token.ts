@@ -1,7 +1,8 @@
 import { BaseQueryFn, fetchBaseQuery } from '@reduxjs/toolkit/query';
+
+import { authApi } from '@/services/auth/api';
 import { refreshToken } from './api';
 import { ErrorResponse } from './types';
-import { authApi } from '@/services/auth/api';
 
 interface CreateBaseQueryOptions {
 	baseUrl: string;
@@ -12,7 +13,7 @@ export const baseQueryRefreshToken = ({
 	baseUrl,
 	contentType = 'application/json',
 }: CreateBaseQueryOptions): BaseQueryFn => {
-	return async (args, api, extraOptions) => {
+	return async (args, api, options) => {
 		const baseQuery = fetchBaseQuery({
 			baseUrl,
 			prepareHeaders: (headers) => {
@@ -25,7 +26,7 @@ export const baseQueryRefreshToken = ({
 			},
 		});
 
-		let result = await baseQuery(args, api, extraOptions);
+		let result = await baseQuery(args, api, options);
 
 		const isJwtExpired =
 			result.error &&
@@ -33,20 +34,14 @@ export const baseQueryRefreshToken = ({
 
 		if (isJwtExpired) {
 			try {
-				const refreshData = await refreshToken();
-				localStorage.setItem('accessToken', refreshData.accessToken);
+				await refreshToken();
 
-				result = await baseQuery(args, api, extraOptions);
+				result = await baseQuery(args, api, options);
 			} catch (err) {
-				const refreshToken = localStorage.getItem('refreshToken');
+				const token = localStorage.getItem('refreshToken');
 
-				if (refreshToken) {
-					await api.dispatch(
-						authApi.endpoints.logout.initiate({ token: refreshToken })
-					);
-
-					localStorage.removeItem('accessToken');
-					localStorage.removeItem('refreshToken');
+				if (token) {
+					await api.dispatch(authApi.endpoints.logout.initiate({ token }));
 				}
 			}
 		}

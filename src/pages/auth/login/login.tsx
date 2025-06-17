@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { FormEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
 	Button,
@@ -8,38 +8,23 @@ import {
 
 import styles from './login.module.css';
 import { useLoginMutation } from '@/services/auth/api';
+import { useForm } from '@/hooks/use-form';
 
 export const LoginPage = (): React.JSX.Element => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const [state, setState] = useState({
-		email: '',
-		password: '',
-	});
+	const { values, handleChange } = useForm({ email: '', password: '' });
 
 	const [login] = useLoginMutation();
-
-	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const target = event.target;
-		const { name, value } = target;
-
-		setState({
-			...state,
-			[name]: value,
-		});
-	};
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		login({ ...state })
+		login({ ...values })
 			.unwrap()
-			.then(({ accessToken, refreshToken }) => {
-				localStorage.setItem('accessToken', accessToken);
-				localStorage.setItem('refreshToken', refreshToken);
-
-				const from = location.state.from.pathname || '/';
+			.then(() => {
+				const from = location.state?.from?.pathname || '/';
 
 				goTo(from);
 			})
@@ -59,19 +44,19 @@ export const LoginPage = (): React.JSX.Element => {
 			<form className={styles.form} onSubmit={handleSubmit}>
 				<EmailInput
 					required
-					value={state.email}
+					value={values.email}
 					name={'email'}
 					placeholder='E-mail'
 					isIcon={false}
-					onChange={onChange}
+					onChange={handleChange}
 				/>
 				<PasswordInput
 					required
-					value={state.password}
+					value={values.password}
 					name={'password'}
 					placeholder='Пароль'
 					extraClass='mb-2'
-					onChange={onChange}
+					onChange={handleChange}
 				/>
 
 				<Button htmlType='submit' type='primary' size='medium'>

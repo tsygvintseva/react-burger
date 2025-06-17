@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import {
 	Button,
 	EmailInput,
@@ -10,9 +10,10 @@ import styles from './profile-edit.module.css';
 import { useEditUserMutation } from '@/services/user/api';
 import { useSelector } from 'react-redux';
 import { getUser } from '@/services/user/reducer';
+import { useForm } from '@/hooks/use-form';
 
 export const ProfileEdit = (): React.JSX.Element => {
-	const [state, setState] = useState({
+	const { values, handleChange, setValues } = useForm({
 		name: '',
 		email: '',
 		password: '',
@@ -25,10 +26,7 @@ export const ProfileEdit = (): React.JSX.Element => {
 	const [editUser] = useEditUserMutation();
 
 	useEffect(() => {
-		setState((prev) => ({
-			...prev,
-			...user,
-		}));
+		if (user) setValues({ ...user, password: '' });
 
 		setValueChanged(false);
 	}, [user]);
@@ -37,27 +35,17 @@ export const ProfileEdit = (): React.JSX.Element => {
 		if (!user) return;
 
 		const changed =
-			user.name !== state.name ||
-			user.email !== state.email ||
-			!!state.password;
+			user.name !== values.name ||
+			user.email !== values.email ||
+			!!values.password;
 
 		setValueChanged(changed);
-	}, [state, user]);
-
-	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const target = event.target;
-		const { name, value } = target;
-
-		setState((prev) => ({
-			...prev,
-			[name]: value,
-		}));
-	};
+	}, [values, user]);
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		editUser({ ...state }).catch((error) => {
+		editUser({ ...values }).catch((error) => {
 			console.error('Не удалось обновить данные о пользователе', error);
 		});
 	};
@@ -65,38 +53,35 @@ export const ProfileEdit = (): React.JSX.Element => {
 	const handleReset = () => {
 		if (!user) return;
 
-		setState({
-			...user,
-			password: '',
-		});
+		setValues({ ...user, password: '' });
 	};
 
 	return (
 		<form ref={formRef} className={styles.form} onSubmit={handleSubmit}>
 			<Input
 				required
-				value={state.name}
+				value={values.name}
 				type={'text'}
 				name={'name'}
 				placeholder='Имя'
 				icon='EditIcon'
-				onChange={onChange}
+				onChange={handleChange}
 			/>
 			<EmailInput
 				required
-				value={state.email}
+				value={values.email}
 				name={'email'}
 				placeholder='Логин'
 				isIcon={true}
-				onChange={onChange}
+				onChange={handleChange}
 			/>
 			<PasswordInput
 				required
-				value={state.password}
+				value={values.password}
 				name={'password'}
 				placeholder='Пароль'
 				icon='EditIcon'
-				onChange={onChange}
+				onChange={handleChange}
 			/>
 
 			{isValueChanged && (

@@ -1,52 +1,25 @@
-import { ErrorResponse } from './types';
+import { BASE_URL } from './const';
+import { ApiResponse } from './types';
 
-const BURGER_API_URL = 'https://norma.nomoreparties.space/api';
-
-const FORGOT_PASSWORD = `${BURGER_API_URL}/password-reset`;
-const RESET_PASSWORD = `${FORGOT_PASSWORD}/reset`;
-const UPDATE_TOKEN = `${BURGER_API_URL}/auth/token`;
-
-export async function requestForgotPassword(email: string) {
-	const res = await fetch(FORGOT_PASSWORD, {
+export const requestForgotPassword = (email: string) =>
+	request('password-reset', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ email }),
 	});
 
-	const data = await checkResponse(res);
-
-	if (!data.success) {
-		throw new Error(
-			`Не удалось отправить email: ${res.status} ${data.message}`
-		);
-	}
-
-	return data;
-}
-
-export async function requestResetPassword(state: {
+export const requestResetPassword = (params: {
 	password: string;
 	token: string;
-}) {
-	const res = await fetch(RESET_PASSWORD, {
+}) =>
+	request('reset', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ ...state }),
+		body: JSON.stringify({ ...params }),
 	});
 
-	const data = await checkResponse(res);
-
-	if (!data.success) {
-		throw new Error(
-			`Не удалось восстановить пароль: ${res.status} ${data.message}`
-		);
-	}
-
-	return data;
-}
-
-export const refreshToken = async () => {
-	const res = await fetch(UPDATE_TOKEN, {
+export const refreshToken = () =>
+	request('auth/token', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',
@@ -54,22 +27,34 @@ export const refreshToken = async () => {
 		body: JSON.stringify({
 			token: localStorage.getItem('refreshToken'),
 		}),
+	}).then((data) => {
+		localStorage.setItem('refreshToken', data.refreshToken);
+		localStorage.setItem('accessToken', data.accessToken);
+
+		return data;
 	});
 
-	const refreshData = await checkResponse(res);
+const request = async (endpoint: string, options?: RequestInit) => {
+	const res = await fetch(`${BASE_URL}/${endpoint}`, options);
+	const res_1 = await checkResponse(res);
 
-	if (!refreshData.success) {
-		return Promise.reject(refreshData);
-	}
-
-	localStorage.setItem('refreshToken', refreshData.refreshToken);
-	localStorage.setItem('accessToken', refreshData.accessToken);
-
-	return refreshData;
+	return checkSuccess(res_1);
 };
 
 const checkResponse = (res: Response) => {
-	return res.ok
-		? res.json()
-		: res.json().then((err: ErrorResponse) => Promise.reject(err));
+	if (res.ok) {
+		return res.json();
+	}
+
+	return Promise.reject(`Ошибка ${res.status}`);
+};
+
+export const checkSuccess = <T>(
+	res: ApiResponse<T>
+): Promise<ApiResponse<T>> => {
+	if (res && res.success) {
+		return Promise.resolve(res);
+	}
+
+	return Promise.reject(`Ответ не success: ${JSON.stringify(res)}`);
 };

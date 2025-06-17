@@ -15,9 +15,6 @@ export const ProfilePage = (): React.JSX.Element => {
 		logout({ token })
 			.unwrap()
 			.then(() => {
-				localStorage.removeItem('accessToken');
-				localStorage.removeItem('refreshToken');
-
 				navigate('/login', { replace: true });
 			})
 			.catch((error) => {
