@@ -45,7 +45,6 @@ export const constructorDataSlice = createSlice({
 					}
 				}
 			},
-
 			prepare: (ingredient: TIngredient) => {
 				if (ingredient.type === EIngredientType.Bun) {
 					const topBun: ConstructorIngredient = {
@@ -65,7 +64,6 @@ export const constructorDataSlice = createSlice({
 				return { payload: [{ ...ingredient, key: nanoid() }] };
 			},
 		},
-
 		removeIngredient: (state, action: PayloadAction<string>) => {
 			const index = state.constructorData.findIndex(
 				(i) => i.key === action.payload
@@ -73,7 +71,6 @@ export const constructorDataSlice = createSlice({
 
 			state.constructorData.splice(index, 1);
 		},
-
 		moveIngredient: (
 			state,
 			action: PayloadAction<{ dragIndex: number; hoverIndex: number }>
@@ -87,7 +84,6 @@ export const constructorDataSlice = createSlice({
 
 			state.constructorData = ingredients;
 		},
-
 		clearConstructorData: (state) => {
 			state.constructorData = [];
 		},

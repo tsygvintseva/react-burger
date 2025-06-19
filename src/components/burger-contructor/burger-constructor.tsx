@@ -18,15 +18,17 @@ import { TIngredient, TOrder } from '@/utils/types';
 import styles from './burger-constructor.module.css';
 import { ConstructorList } from './constructor-list/constructor-list';
 import { OrderDetails } from './order-details/order-details';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor = (): React.JSX.Element => {
 	const [orderData, setOrderData] = useState<TOrder['order'] | null>(null);
 
 	const [isOpen, open, close] = useModalVisible();
 
-	const [createOrder] = useCreateOrderMutation();
+	const [createOrder, { isLoading, isSuccess }] = useCreateOrderMutation();
 
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const constructorData = useSelector(getConstructorData);
 
@@ -53,15 +55,24 @@ export const BurgerConstructor = (): React.JSX.Element => {
 	};
 
 	const handleClick = () => {
-		const ids = constructorData.map((item) => item._id);
-		createOrder({ ingredients: ids })
-			.unwrap()
-			.then(({ order }) => {
-				setOrderData(order);
-				open();
+		const token = localStorage.getItem('accessToken');
 
-				dispatch(clearConstructorData());
-			});
+		if (!token) navigate('/login', { replace: true });
+		else {
+			open();
+
+			const ids = constructorData.map((item) => item._id);
+			createOrder({ ingredients: ids })
+				.unwrap()
+				.then(({ order }) => {
+					setOrderData(order);
+
+					dispatch(clearConstructorData());
+				})
+				.catch((error) => {
+					console.error('Не удалось оформить заказ:', error);
+				});
+		}
 	};
 
 	return (
@@ -103,15 +114,21 @@ export const BurgerConstructor = (): React.JSX.Element => {
 						ref={dropTarget}
 						className={`${styles.empty} ${isHover ? styles.bounce : ''}`}>
 						<p
-							className={`${isHover ? styles.bounce : ''} text text_type_main-default`}>
-							🚀 Ваш бургер ещё не собран. Перетащите булку, соусы и начинки.
+							className={`${isHover ? styles.bounce : ''} text text_type_main-default text_color_inactive`}>
+							🚀 Ваш бургер ещё не собран.
+							<br /> Перетащите булку, соусы и начинки.
 						</p>
 					</div>
 				)}
 			</section>
 
 			{isOpen && (
-				<OrderDetails orderNumber={orderData?.number} onClose={close} />
+				<OrderDetails
+					isLoading={isLoading}
+					isSuccess={isSuccess}
+					orderNumber={orderData?.number}
+					onClose={close}
+				/>
 			)}
 		</>
 	);

@@ -1,12 +1,11 @@
-import { useDispatch } from 'react-redux';
 import { useDrag } from 'react-dnd';
+import { Link, useLocation } from 'react-router-dom';
 import {
 	Counter,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { TIngredient } from '@/utils/types';
-import { setCurrentIngredient } from '@/services/current-ingredient/reducer';
 import styles from './ingredients-list-item.module.css';
 
 type TIngredientsItemProps = {
@@ -18,11 +17,7 @@ export const IngredientsListItem = ({
 	counter,
 	ingredient,
 }: TIngredientsItemProps): React.JSX.Element => {
-	const dispatch = useDispatch();
-
-	const handleSelectIngredient = () => {
-		dispatch(setCurrentIngredient(ingredient));
-	};
+	const location = useLocation();
 
 	const [{ opacity }, ref] = useDrag({
 		type: 'ingredients',
@@ -33,8 +28,11 @@ export const IngredientsListItem = ({
 	});
 
 	return (
-		<>
-			<li className={`${styles.ingredient}`} ref={ref} style={{ opacity }}>
+		<li className={`${styles.ingredient}`} ref={ref} style={{ opacity }}>
+			<Link
+				to={`/ingredients/${ingredient._id}`}
+				state={{ background: location }}
+				className={styles.link}>
 				{!!counter && (
 					<Counter count={counter} size='default' extraClass='m-1' />
 				)}
@@ -54,11 +52,7 @@ export const IngredientsListItem = ({
 				<h3 className={`${styles.name} text text_type_main-default`}>
 					{ingredient.name}
 				</h3>
-
-				<button
-					className={styles.ingredient_button}
-					onClick={handleSelectIngredient}></button>
-			</li>
-		</>
+			</Link>
+		</li>
 	);
 };

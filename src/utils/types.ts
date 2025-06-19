@@ -25,3 +25,11 @@ export type TOrder = {
 		number: number;
 	};
 };
+
+export type ApiResponse<T> = {
+	success: boolean;
+} & T;
+
+export type ErrorResponse = ApiResponse<{
+	message: string;
+}>;
