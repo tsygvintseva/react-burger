@@ -41,7 +41,7 @@ export const ConstructorListItem = ({
 
 	const [{ handlerId }, drop] = useDrop<
 		DragItem,
-		void,
+		unknown,
 		{ handlerId: string | symbol | null }
 	>({
 		accept: 'element',

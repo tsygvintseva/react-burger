@@ -38,7 +38,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 
 	const [{ isHover }, dropTarget] = useDrop<
 		TIngredient,
-		void,
+		unknown,
 		{ isHover: boolean }
 	>({
 		accept: 'ingredients',
