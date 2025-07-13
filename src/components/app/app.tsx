@@ -18,9 +18,9 @@ import { Modal } from '../modal/modal';
 import { Preloader } from '../preloader/preloader';
 import { IngredientsPage } from '@/pages/ingredients-page/ingredients-page';
 import { OnlyAuth, OnlyUnAuth } from './protected-route';
-import { useDispatch } from 'react-redux';
 import { useLazyGetUserQuery } from '@/services/user/api';
 import { setIsAuthChecked } from '@/services/user/reducer';
+import { useDispatch } from '@/utils/types';
 
 export const App = (): React.JSX.Element => {
 	const dispatch = useDispatch();

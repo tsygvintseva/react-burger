@@ -7,7 +7,7 @@ import { authApi } from './auth/api';
 import { userApi } from './user/api';
 import { userSlice } from './user/reducer';
 
-const rootReducer = combineSlices(
+export const rootReducer = combineSlices(
 	ingredientsApi,
 	constructorDataSlice,
 	ordersApi,

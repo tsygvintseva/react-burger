@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useDrop } from 'react-dnd';
 import {
 	Button,
@@ -14,7 +13,7 @@ import {
 	removeIngredient,
 } from '@/services/constructor-data/reducer';
 import { useCreateOrderMutation } from '@/services/orders/api';
-import { TIngredient, TOrder } from '@/utils/types';
+import { TIngredient, TOrder, useDispatch, useSelector } from '@/utils/types';
 import styles from './burger-constructor.module.css';
 import { ConstructorList } from './constructor-list/constructor-list';
 import { OrderDetails } from './order-details/order-details';

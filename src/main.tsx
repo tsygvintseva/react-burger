@@ -7,7 +7,7 @@ import { App } from '@components/app/app.tsx';
 import { configureStore } from './services/store';
 import './index.css';
 
-const store = configureStore();
+export const store = configureStore();
 
 createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>

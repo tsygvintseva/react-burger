@@ -1,4 +1,12 @@
+import { rootReducer } from '@/services/store';
 import { EIngredientType } from './enums';
+import {
+	useSelector as selectorHook,
+	useDispatch as dispatchHook,
+} from 'react-redux';
+import { ThunkDispatch } from '@reduxjs/toolkit';
+import { userSlice } from '@/services/user/reducer';
+import { constructorDataSlice } from '@/services/constructor-data/reducer';
 
 export type TIngredient = {
 	_id: string;
@@ -33,3 +41,19 @@ export type ApiResponse<T> = {
 export type ErrorResponse = ApiResponse<{
 	message: string;
 }>;
+
+type UserActions = ReturnType<
+	(typeof userSlice.actions)[keyof typeof userSlice.actions]
+>;
+
+type ConstructorActions = ReturnType<
+	(typeof constructorDataSlice.actions)[keyof typeof constructorDataSlice.actions]
+>;
+
+type AppActions = UserActions | ConstructorActions;
+
+type RootState = ReturnType<typeof rootReducer>;
+type AppDispatch = ThunkDispatch<RootState, unknown, AppActions>;
+
+export const useDispatch = dispatchHook.withTypes<AppDispatch>();
+export const useSelector = selectorHook.withTypes<RootState>();
