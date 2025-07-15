@@ -6,14 +6,18 @@ import { ordersApi } from './orders/api';
 import { authApi } from './auth/api';
 import { userApi } from './user/api';
 import { userSlice } from './user/reducer';
+import { ordersSocketApi } from './orders-soket/api';
+import { ingredientsSlice } from './ingredients/reducer';
 
 export const rootReducer = combineSlices(
-	ingredientsApi,
+	userSlice,
+	ingredientsSlice,
 	constructorDataSlice,
-	ordersApi,
 	authApi,
 	userApi,
-	userSlice
+	ordersApi,
+	ingredientsApi,
+	ordersSocketApi
 );
 
 export const configureStore = () => {
@@ -22,10 +26,11 @@ export const configureStore = () => {
 		devTools: process.env.NODE_ENV !== 'production',
 		middleware: (getDefaultMiddleware) =>
 			getDefaultMiddleware().concat(
-				ingredientsApi.middleware,
-				ordersApi.middleware,
 				authApi.middleware,
-				userApi.middleware
+				userApi.middleware,
+				ordersApi.middleware,
+				ingredientsApi.middleware,
+				ordersSocketApi.middleware
 			),
 	});
 };

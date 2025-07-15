@@ -1,28 +1,9 @@
-import { createSelector } from '@reduxjs/toolkit';
+import { RootState, TIngredient } from '@/utils/types';
 
-import { EIngredientType } from '@/utils/enums';
-import { TIngredient } from '@/utils/types';
-import { tabs } from '@/utils/const';
-import { ingredientsApi } from './api';
+export const selectGroupedIngredients = (state: RootState) =>
+	state.ingredients.grouped;
 
-type TGroupedIngredients = Partial<Record<EIngredientType, TIngredient[]>>;
-
-export const selectGroupedIngredients = createSelector(
-	ingredientsApi.endpoints.getIngredients.select(),
-	(result): TGroupedIngredients => {
-		const ingredients = result?.data;
-		const grouped: TGroupedIngredients = {} as TGroupedIngredients;
-
-		for (const { value: type } of tabs) {
-			grouped[type as EIngredientType] =
-				ingredients?.filter((item: TIngredient) => item.type === type) ?? [];
-		}
-
-		return grouped;
-	}
-);
-
-export const selectIngredientById = (id: string) =>
-	createSelector(ingredientsApi.endpoints.getIngredients.select(), (result) =>
-		result?.data?.find((ingredient) => ingredient._id === id)
-	);
+export const selectIngredientById =
+	(id: string) =>
+	(state: RootState): TIngredient | undefined =>
+		state.ingredients.map[id];

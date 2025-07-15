@@ -3,3 +3,9 @@ export enum EIngredientType {
 	Sauce = 'sauce',
 	Main = 'main',
 }
+
+export enum EOrderStatus {
+	Created = 'created',
+	Pending = 'pending',
+	Done = 'done',
+}

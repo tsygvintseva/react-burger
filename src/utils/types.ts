@@ -1,5 +1,5 @@
 import { rootReducer } from '@/services/store';
-import { EIngredientType } from './enums';
+import { EIngredientType, EOrderStatus } from './enums';
 import {
 	useSelector as selectorHook,
 	useDispatch as dispatchHook,
@@ -34,6 +34,16 @@ export type TOrder = {
 	};
 };
 
+export type TWSOrder = {
+	_id: string;
+	ingredients: string[];
+	status: EOrderStatus;
+	name: string;
+	number: number;
+	createdAt: string;
+	updatedAt: string;
+};
+
 export type ApiResponse<T> = {
 	success: boolean;
 } & T;
@@ -52,7 +62,7 @@ type ConstructorActions = ReturnType<
 
 type AppActions = UserActions | ConstructorActions;
 
-type RootState = ReturnType<typeof rootReducer>;
+export type RootState = ReturnType<typeof rootReducer>;
 type AppDispatch = ThunkDispatch<RootState, unknown, AppActions>;
 
 export const useDispatch = dispatchHook.withTypes<AppDispatch>();

@@ -12,7 +12,7 @@ import { ProfilePage } from '@/pages/profile/profile';
 import { OrdersPage } from '@/pages/profile/orders/orders';
 import { NotFoundPage } from '@/pages/not-found/not-found';
 import { useGetIngredientsQuery } from '@/services/ingredients/api';
-import { ProfileEdit } from '../profile-edit/profile-edit';
+import { ProfileEdit } from '../../pages/profile/profile-edit/profile-edit';
 import { IngredientsDetails } from '../burger-ingredients/ingredients-details/ingredients-details';
 import { Modal } from '../modal/modal';
 import { Preloader } from '../preloader/preloader';
@@ -21,6 +21,7 @@ import { OnlyAuth, OnlyUnAuth } from './protected-route';
 import { useLazyGetUserQuery } from '@/services/user/api';
 import { setIsAuthChecked } from '@/services/user/reducer';
 import { useDispatch } from '@/utils/types';
+import { FeedPage } from '@/pages/feed/feed';
 
 export const App = (): React.JSX.Element => {
 	const dispatch = useDispatch();
@@ -94,6 +95,7 @@ export const App = (): React.JSX.Element => {
 							</Route>
 
 							<Route path='/' element={<HomePage />} />
+							<Route path='/feed' element={<FeedPage />} />
 							<Route path='/ingredients/:id' element={<IngredientsPage />} />
 
 							<Route path='*' element={<NotFoundPage />} />

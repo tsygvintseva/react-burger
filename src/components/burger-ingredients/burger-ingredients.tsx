@@ -54,7 +54,7 @@ export const BurgerIngredients = (): React.JSX.Element => {
 			/>
 
 			<div
-				className={`${styles.ingredients_list} mt-10 mb-10 custom-scroll`}
+				className={`${styles.ingredients_list} mt-10 custom-scroll`}
 				onScroll={handleScroll}>
 				{Object.entries(groupedIngredients).map(([type, items]) => (
 					<IngredientsList

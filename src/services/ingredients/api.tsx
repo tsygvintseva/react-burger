@@ -3,6 +3,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { TIngredient } from '@/utils/types';
 import { BASE_URL } from '@/utils/const';
+import { setIngredientsData } from './reducer';
 
 export const ingredientsApiConfig = {
 	baseUrl: BASE_URL,
@@ -29,6 +30,14 @@ export const ingredientsApi = createApi({
 				data: TIngredient[];
 			}) => response.data,
 			providesTags: () => [{ type: 'Ingredients', id: 'LIST' }],
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {
+					const { data } = await queryFulfilled;
+					dispatch(setIngredientsData(data));
+				} catch {
+					// intentionally left blank
+				}
+			},
 		}),
 	}),
 });

@@ -23,7 +23,7 @@ export const ProfilePage = (): React.JSX.Element => {
 	};
 
 	return (
-		<main className={`${styles.main} pl-5 pr-5`}>
+		<section className={`${styles.profile} pl-5 pr-5`}>
 			<div>
 				<nav className={styles.nav}>
 					<NavLink
@@ -61,6 +61,6 @@ export const ProfilePage = (): React.JSX.Element => {
 			</div>
 
 			<Outlet />
-		</main>
+		</section>
 	);
 };

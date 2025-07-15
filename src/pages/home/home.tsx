@@ -7,17 +7,17 @@ import { BurgerConstructor } from '@/components/burger-contructor/burger-constru
 
 export const HomePage = (): React.JSX.Element => {
 	return (
-		<div className={styles.app}>
+		<section className={styles.app}>
 			<h1
 				className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
 				Соберите бургер
 			</h1>
-			<div className={`${styles.main} pl-5 pr-5`}>
+			<div className={`${styles.content} pl-5 pr-5`}>
 				<DndProvider backend={HTML5Backend}>
 					<BurgerIngredients />
 					<BurgerConstructor />
 				</DndProvider>
 			</div>
-		</div>
+		</section>
 	);
 };

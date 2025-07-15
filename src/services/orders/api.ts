@@ -11,7 +11,7 @@ export const ordersApiConfig = {
 	},
 };
 
-type CreateOrderPayload = {
+type CreateOrderRequest = {
 	ingredients: string[];
 };
 
@@ -23,8 +23,8 @@ export const ordersApi = createApi({
 	}),
 	tagTypes: ['Orders'],
 	endpoints: (builder) => ({
-		createOrder: builder.mutation<TOrder, CreateOrderPayload>({
-			query: (body: CreateOrderPayload) => ({
+		createOrder: builder.mutation<TOrder, CreateOrderRequest>({
+			query: (body: CreateOrderRequest) => ({
 				url: '/orders',
 				method: 'POST',
 				body,
