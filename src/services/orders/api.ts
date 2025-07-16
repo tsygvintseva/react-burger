@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { BASE_URL } from '@/utils/const';
-import { TOrder } from '@/utils/types';
+import { TOrder, TWSOrder } from '@/utils/types';
 import { baseQueryRefreshToken } from '@/utils/refresh-token';
 
 export const ordersApiConfig = {
@@ -31,7 +31,11 @@ export const ordersApi = createApi({
 			}),
 			invalidatesTags: [{ type: 'Orders', id: 'ORDERS' }],
 		}),
+		getOrderByNumber: builder.query<TWSOrder[], string>({
+			query: (number) => `/orders/${number}`,
+			providesTags: () => [{ type: 'Orders', id: 'ITEM' }],
+		}),
 	}),
 });
 
-export const { useCreateOrderMutation } = ordersApi;
+export const { useCreateOrderMutation, useGetOrderByNumberQuery } = ordersApi;

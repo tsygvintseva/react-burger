@@ -1,8 +1,12 @@
 .profile {
 	display: flex;
-	margin-top: 120px;
+	padding-top: 120px;
 	overflow: hidden;
 	column-gap: 60px;
+}
+
+.menu {
+	width: 320px;
 }
 
 .nav {

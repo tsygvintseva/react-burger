@@ -1,9 +1,19 @@
+.feed {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
 .content {
 	display: grid;
 	grid-template-columns: 608px 1fr;
 	height: calc(100vh - 188px);
 	overflow: hidden;
 	column-gap: 56px;
+}
+
+.preloader {
+	height: 100%;
 }
 
 .list {
@@ -30,7 +40,7 @@
 	display: flex;
 	flex-flow: column wrap;
 	row-gap: 8px;
-	height: 154px;
+	height: 217px;
 	margin-top: 24px;
 }
 

@@ -23,8 +23,8 @@ export const ProfilePage = (): React.JSX.Element => {
 	};
 
 	return (
-		<section className={`${styles.profile} pl-5 pr-5`}>
-			<div>
+		<section className={styles.profile}>
+			<div className={styles.menu}>
 				<nav className={styles.nav}>
 					<NavLink
 						to={'.'}

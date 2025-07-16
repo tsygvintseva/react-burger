@@ -1,0 +1,13 @@
+.list {
+	display: flex;
+	flex-grow: 1;
+	flex-direction: column;
+	row-gap: 16px;
+	height: calc(100vh - 208px);
+	padding-right: 8px;
+	overflow: hidden auto;
+}
+
+.help {
+	opacity: 0.4;
+}

@@ -81,7 +81,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 					<>
 						<div
 							ref={dropTarget}
-							className={` ${styles.constructor} ${isHover ? styles.bounce : ''} ml-4 mr-4 mb-10`}>
+							className={` ${styles.constructor} ${isHover ? styles.bounce : ''} mb-10`}>
 							{
 								<ConstructorList
 									ingredients={constructorData}

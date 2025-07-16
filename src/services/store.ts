@@ -8,11 +8,13 @@ import { userApi } from './user/api';
 import { userSlice } from './user/reducer';
 import { ordersSocketApi } from './orders-soket/api';
 import { ingredientsSlice } from './ingredients/reducer';
+import { wsStatusSlice } from './orders-soket/reducer';
 
 export const rootReducer = combineSlices(
 	userSlice,
 	ingredientsSlice,
 	constructorDataSlice,
+	wsStatusSlice,
 	authApi,
 	userApi,
 	ordersApi,

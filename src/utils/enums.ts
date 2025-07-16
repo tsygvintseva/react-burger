@@ -9,3 +9,12 @@ export enum EOrderStatus {
 	Pending = 'pending',
 	Done = 'done',
 }
+
+export enum EWSConnectionStatus {
+	Idle = 'idle',
+	Connecting = 'connecting',
+	Open = 'open',
+	Receiving = 'receiving',
+	Error = 'error',
+	Closed = 'closed',
+}

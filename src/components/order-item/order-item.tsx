@@ -5,16 +5,27 @@ import {
 	FormattedDate,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useMemo } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { EOrderStatus } from '@/utils/enums';
+
+const orderStatusMap: Record<EOrderStatus, string> = {
+	[EOrderStatus.Done]: 'Выполнен',
+	[EOrderStatus.Pending]: 'Готовится',
+	[EOrderStatus.Created]: 'Создан',
+};
 
 export const OrderItem = ({
 	order,
+	withStatus = false,
 }: {
 	order: TWSOrder;
+	withStatus?: boolean;
 }): React.JSX.Element => {
 	const ingredientMap = useSelector((state) => state.ingredients.map);
+	const location = useLocation();
 
 	const images = useMemo(() => {
-		return order.ingredients.map((id) => {
+		return order.ingredients.slice(0, 8).map((id) => {
 			const item = ingredientMap[id];
 			return {
 				alt: item?.name ?? '',
@@ -31,7 +42,10 @@ export const OrderItem = ({
 	}, [order.ingredients, ingredientMap]);
 
 	return (
-		<div className={`${styles.card} p-5`}>
+		<Link
+			to={`/feed/${order.number}`}
+			className={`${styles.card} p-5`}
+			state={{ background: location }}>
 			<div className={styles.header}>
 				<span className='text text_type_digits-default'>#{order.number}</span>
 				<FormattedDate
@@ -39,7 +53,16 @@ export const OrderItem = ({
 					className='text text_type_main-default text_color_inactive'
 				/>
 			</div>
-			<p className='text text_type_main-medium'>{order.name}</p>
+			<p className='text text_type_main-medium'>
+				{order.name}
+
+				{withStatus && (
+					<span
+						className={`${styles.status} ${order.status === EOrderStatus.Done ? `${styles.done}` : ''} text text_type_main-small mt-2`}>
+						{orderStatusMap[order.status]}
+					</span>
+				)}
+			</p>
 
 			<div className={styles.footer}>
 				<div className={styles.imageWrapper}>
@@ -60,6 +83,6 @@ export const OrderItem = ({
 					<CurrencyIcon type='primary' />
 				</p>
 			</div>
-		</div>
+		</Link>
 	);
 };

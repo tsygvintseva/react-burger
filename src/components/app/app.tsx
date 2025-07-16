@@ -16,12 +16,14 @@ import { ProfileEdit } from '../../pages/profile/profile-edit/profile-edit';
 import { IngredientsDetails } from '../burger-ingredients/ingredients-details/ingredients-details';
 import { Modal } from '../modal/modal';
 import { Preloader } from '../preloader/preloader';
-import { IngredientsPage } from '@/pages/ingredients-page/ingredients-page';
 import { OnlyAuth, OnlyUnAuth } from './protected-route';
 import { useLazyGetUserQuery } from '@/services/user/api';
 import { setIsAuthChecked } from '@/services/user/reducer';
 import { useDispatch } from '@/utils/types';
 import { FeedPage } from '@/pages/feed/feed';
+import { IngredientPage } from '@/pages/ingredient/ingredient';
+import { OrderPage } from '@/pages/order/order';
+import { OrderItemDetails } from '../order-item/order-item-details/order-item-details';
 
 export const App = (): React.JSX.Element => {
 	const dispatch = useDispatch();
@@ -69,6 +71,14 @@ export const App = (): React.JSX.Element => {
 										</Modal>
 									}
 								/>
+								<Route
+									path='/feed/:number'
+									element={
+										<Modal title='' onClose={handleModalClose}>
+											<OrderItemDetails />
+										</Modal>
+									}
+								/>
 							</Routes>
 						)}
 
@@ -96,7 +106,8 @@ export const App = (): React.JSX.Element => {
 
 							<Route path='/' element={<HomePage />} />
 							<Route path='/feed' element={<FeedPage />} />
-							<Route path='/ingredients/:id' element={<IngredientsPage />} />
+							<Route path='/feed/:number' element={<OrderPage />} />
+							<Route path='/ingredients/:id' element={<IngredientPage />} />
 
 							<Route path='*' element={<NotFoundPage />} />
 						</Routes>
