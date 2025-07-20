@@ -59,16 +59,13 @@ export const authApi = createApi({
 			}),
 			invalidatesTags: [{ type: 'Auth', id: 'LOGIN' }],
 
-			async onQueryStarted(_, { dispatch, queryFulfilled }) {
-				try {
-					const { data } = await queryFulfilled;
+			onQueryStarted(_, { dispatch, queryFulfilled }) {
+				queryFulfilled.then(({ data }) => {
 					dispatch(setUser(data.user));
 
 					localStorage.setItem('accessToken', data.accessToken);
 					localStorage.setItem('refreshToken', data.refreshToken);
-				} catch {
-					// intentionally left blank
-				}
+				});
 			},
 		}),
 		logout: builder.mutation<LogoutResponse, { token: string }>({
@@ -79,16 +76,13 @@ export const authApi = createApi({
 			}),
 			invalidatesTags: [{ type: 'Auth', id: 'LOGOUT' }],
 
-			async onQueryStarted(_, { dispatch, queryFulfilled }) {
-				try {
-					await queryFulfilled;
+			onQueryStarted(_, { dispatch, queryFulfilled }) {
+				queryFulfilled.then(() => {
 					dispatch(setUser(null));
 
 					localStorage.removeItem('accessToken');
 					localStorage.removeItem('refreshToken');
-				} catch {
-					// intentionally left blank
-				}
+				});
 			},
 		}),
 	}),

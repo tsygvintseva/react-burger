@@ -57,13 +57,10 @@ export const userApi = createApi({
 			}),
 			invalidatesTags: [{ type: 'Auth', id: 'USER' }],
 
-			async onQueryStarted(_, { dispatch, queryFulfilled }) {
-				try {
-					const { data } = await queryFulfilled;
+			onQueryStarted(_, { dispatch, queryFulfilled }) {
+				queryFulfilled.then(({ data }) => {
 					dispatch(setUser(data.user));
-				} catch {
-					// intentionally left blank
-				}
+				});
 			},
 		}),
 	}),

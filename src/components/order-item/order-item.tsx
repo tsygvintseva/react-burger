@@ -7,8 +7,9 @@ import {
 import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { EOrderStatus } from '@/utils/enums';
+import { InrgedientImage } from '../inrgedient-image/inrgedient-image';
 
-const orderStatusMap: Record<EOrderStatus, string> = {
+export const orderStatusMap: Record<EOrderStatus, string> = {
 	[EOrderStatus.Done]: 'Выполнен',
 	[EOrderStatus.Pending]: 'Готовится',
 	[EOrderStatus.Created]: 'Создан',
@@ -43,7 +44,7 @@ export const OrderItem = ({
 
 	return (
 		<Link
-			to={`/feed/${order.number}`}
+			to={`${location.pathname}/${order.number}`}
 			className={`${styles.card} p-5`}
 			state={{ background: location }}>
 			<div className={styles.header}>
@@ -67,13 +68,8 @@ export const OrderItem = ({
 			<div className={styles.footer}>
 				<div className={styles.imageWrapper}>
 					{images.map((item, index) => (
-						<div
-							key={index}
-							className={styles.stroke}
-							style={{ zIndex: images.length - index }}>
-							<div className={`${styles.image}`}>
-								<img className='' alt={item.alt} src={item.path} />
-							</div>
+						<div key={index} style={{ zIndex: images.length - index }}>
+							<InrgedientImage alt={item.alt} src={item.path} />
 						</div>
 					))}
 				</div>

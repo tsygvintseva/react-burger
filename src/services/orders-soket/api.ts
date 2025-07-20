@@ -12,6 +12,8 @@ type TWSOrdersResponse = ApiResponse<{
 	totalToday: number;
 }>;
 
+const RECONNECT_DELAY = 3000;
+
 export const ordersSocketApi = createApi({
 	reducerPath: 'ordersSocketApi',
 	baseQuery: fakeBaseQuery(),
@@ -24,42 +26,64 @@ export const ordersSocketApi = createApi({
 				_,
 				{ updateCachedData, cacheEntryRemoved, dispatch }
 			) {
-				dispatch(setWSStatus(EWSConnectionStatus.Connecting));
+				let socket: WebSocket | null = null;
+				let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+				let manuallyClosed = false;
 
-				try {
-					const socket = new WebSocket(ORDERS_ALL_URL);
+				const connectSocket = () => {
+					dispatch(setWSStatus(EWSConnectionStatus.Connecting));
 
-					socket.onopen = () => {
-						dispatch(setWSStatus(EWSConnectionStatus.Open));
-					};
+					try {
+						socket = new WebSocket(ORDERS_ALL_URL);
 
-					socket.onmessage = (event) => {
-						dispatch(setWSStatus(EWSConnectionStatus.Receiving));
+						socket.onopen = () => {
+							dispatch(setWSStatus(EWSConnectionStatus.Open));
+						};
 
-						try {
-							const data = JSON.parse(event.data) as TWSOrdersResponse;
-							if (data.success) {
-								updateCachedData(() => data);
+						socket.onmessage = (event) => {
+							dispatch(setWSStatus(EWSConnectionStatus.Receiving));
+
+							try {
+								const data = JSON.parse(event.data) as TWSOrdersResponse;
+								if (data.success) {
+									updateCachedData(() => data);
+								}
+							} catch (error) {
+								console.error('Ошибка при обработке данных от сервера', error);
+								dispatch(setWSStatus(EWSConnectionStatus.Error));
+								return;
 							}
-						} catch (err) {
-							console.error('WS message parse error', err);
+						};
+
+						socket.onerror = () => {
 							dispatch(setWSStatus(EWSConnectionStatus.Error));
-						}
-					};
+						};
 
-					socket.onerror = () => {
-						dispatch(setWSStatus(EWSConnectionStatus.Error));
-					};
+						socket.onclose = (event) => {
+							dispatch(setWSStatus(EWSConnectionStatus.Closed));
 
-					socket.onclose = () => {
-						dispatch(setWSStatus(EWSConnectionStatus.Closed));
-					};
+							const wasClean = event.wasClean || event.code === 1000;
+							const isConnected = !manuallyClosed;
 
-					await cacheEntryRemoved;
-					socket.close();
-				} catch (err) {
-					console.error('WS setup error', err);
-				}
+							if (isConnected && !wasClean) {
+								reconnectTimer = setTimeout(() => {
+									connectSocket();
+								}, RECONNECT_DELAY);
+							}
+						};
+					} catch (error) {
+						console.error('Ошибка подключения к WS', error);
+						return;
+					}
+				};
+
+				connectSocket();
+
+				await cacheEntryRemoved;
+
+				manuallyClosed = true;
+				if (socket) (socket as WebSocket).close();
+				if (reconnectTimer) clearTimeout(reconnectTimer);
 			},
 		}),
 
@@ -72,46 +96,69 @@ export const ordersSocketApi = createApi({
 				{ updateCachedData, cacheEntryRemoved, dispatch }
 			) {
 				const bearerToken = localStorage.getItem('accessToken');
+
 				if (!bearerToken) return;
 
-				const token = bearerToken.replace(/^Bearer\s/, '');
+				const socket: WebSocket | null = null;
+				let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+				let manuallyClosed = false;
 
-				dispatch(setWSStatus(EWSConnectionStatus.Connecting));
+				const connectSocket = () => {
+					dispatch(setWSStatus(EWSConnectionStatus.Connecting));
 
-				try {
-					const socket = new WebSocket(`${ORDERS_USER_URL}?token=${token}`);
+					try {
+						const token = bearerToken.replace(/^Bearer\s/, '');
+						const socket = new WebSocket(`${ORDERS_USER_URL}?token=${token}`);
 
-					socket.onopen = () => {
-						dispatch(setWSStatus(EWSConnectionStatus.Open));
-					};
+						socket.onopen = () => {
+							dispatch(setWSStatus(EWSConnectionStatus.Open));
+						};
 
-					socket.onmessage = (event) => {
-						dispatch(setWSStatus(EWSConnectionStatus.Receiving));
+						socket.onmessage = (event) => {
+							dispatch(setWSStatus(EWSConnectionStatus.Receiving));
 
-						try {
-							const data = JSON.parse(event.data) as TWSOrdersResponse;
-							if (data.success) {
-								updateCachedData(() => data);
+							try {
+								const data = JSON.parse(event.data) as TWSOrdersResponse;
+								if (data.success) {
+									updateCachedData(() => data);
+								}
+							} catch (error) {
+								console.error('Ошибка при обработке данных от сервера', error);
+								dispatch(setWSStatus(EWSConnectionStatus.Error));
+
+								return;
 							}
-						} catch (err) {
-							console.error('WS message parse error', err);
+						};
+
+						socket.onerror = () => {
 							dispatch(setWSStatus(EWSConnectionStatus.Error));
-						}
-					};
+						};
 
-					socket.onerror = () => {
-						dispatch(setWSStatus(EWSConnectionStatus.Error));
-					};
+						socket.onclose = (event) => {
+							dispatch(setWSStatus(EWSConnectionStatus.Closed));
 
-					socket.onclose = () => {
-						dispatch(setWSStatus(EWSConnectionStatus.Closed));
-					};
+							const wasClean = event.wasClean || event.code === 1000;
+							const isConnected = !manuallyClosed;
 
-					await cacheEntryRemoved;
-					socket.close();
-				} catch (err) {
-					console.error('WS setup error', err);
-				}
+							if (isConnected && !wasClean) {
+								reconnectTimer = setTimeout(() => {
+									connectSocket();
+								}, RECONNECT_DELAY);
+							}
+						};
+					} catch (error) {
+						console.error('Ошибка подключения к WS', error);
+						return;
+					}
+				};
+
+				connectSocket();
+
+				await cacheEntryRemoved;
+
+				manuallyClosed = true;
+				if (socket) (socket as WebSocket).close();
+				if (reconnectTimer) clearTimeout(reconnectTimer);
 			},
 		}),
 	}),

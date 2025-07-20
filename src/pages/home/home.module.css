@@ -16,6 +16,7 @@
 .content {
 	display: flex;
 	justify-content: space-between;
+	padding: 0;
 	overflow: hidden;
 	column-gap: 24px;
 }

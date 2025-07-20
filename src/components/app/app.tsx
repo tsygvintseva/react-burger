@@ -23,7 +23,7 @@ import { useDispatch } from '@/utils/types';
 import { FeedPage } from '@/pages/feed/feed';
 import { IngredientPage } from '@/pages/ingredient/ingredient';
 import { OrderPage } from '@/pages/order/order';
-import { OrderItemDetails } from '../order-item/order-item-details/order-item-details';
+import { OrderModal } from '../order-modal/order-modal';
 
 export const App = (): React.JSX.Element => {
 	const dispatch = useDispatch();
@@ -73,11 +73,11 @@ export const App = (): React.JSX.Element => {
 								/>
 								<Route
 									path='/feed/:number'
-									element={
-										<Modal title='' onClose={handleModalClose}>
-											<OrderItemDetails />
-										</Modal>
-									}
+									element={<OrderModal onClose={handleModalClose} />}
+								/>
+								<Route
+									path='/profile/orders/:number'
+									element={<OrderModal onClose={handleModalClose} />}
 								/>
 							</Routes>
 						)}
@@ -108,6 +108,7 @@ export const App = (): React.JSX.Element => {
 							<Route path='/feed' element={<FeedPage />} />
 							<Route path='/feed/:number' element={<OrderPage />} />
 							<Route path='/ingredients/:id' element={<IngredientPage />} />
+							<Route path='/profile/orders/:number' element={<OrderPage />} />
 
 							<Route path='*' element={<NotFoundPage />} />
 						</Routes>

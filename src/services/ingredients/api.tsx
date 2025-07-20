@@ -30,13 +30,11 @@ export const ingredientsApi = createApi({
 				data: TIngredient[];
 			}) => response.data,
 			providesTags: () => [{ type: 'Ingredients', id: 'LIST' }],
-			async onQueryStarted(_, { dispatch, queryFulfilled }) {
-				try {
-					const { data } = await queryFulfilled;
+
+			onQueryStarted(_, { dispatch, queryFulfilled }) {
+				queryFulfilled.then(({ data }) => {
 					dispatch(setIngredientsData(data));
-				} catch {
-					// intentionally left blank
-				}
+				});
 			},
 		}),
 	}),

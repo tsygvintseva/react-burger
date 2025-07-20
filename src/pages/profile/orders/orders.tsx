@@ -4,12 +4,15 @@ import { OrderItem } from '@/components/order-item/order-item';
 import { Preloader } from '@/components/preloader/preloader';
 import { useSelector } from '@/utils/types';
 import { EWSConnectionStatus } from '@/utils/enums';
+import { useMemo } from 'react';
 
 export const OrdersPage = (): React.JSX.Element => {
 	const wsStatus = useSelector((state) => state.wsStatusSlice);
 	const { data } = useGetUserOrdersQuery();
 
-	console.log(data);
+	const orders = useMemo(() => {
+		return [...(data?.orders ?? [])].reverse();
+	}, [data?.orders]);
 
 	return (
 		<>
@@ -20,7 +23,7 @@ export const OrdersPage = (): React.JSX.Element => {
 				<>
 					{data?.orders.length ? (
 						<section className={`${styles.list} custom-scroll`}>
-							{data?.orders.map((item) => (
+							{orders.map((item) => (
 								<OrderItem key={item.number} order={item} withStatus={true} />
 							))}
 						</section>

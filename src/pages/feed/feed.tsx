@@ -14,7 +14,7 @@ export const FeedPage = (): React.JSX.Element => {
 		return (
 			data?.orders
 				.filter((item) => item.status === EOrderStatus.Done)
-				.slice(0, 14) ?? []
+				.slice(0, 10) ?? []
 		);
 	}, [data?.orders]);
 
@@ -22,7 +22,7 @@ export const FeedPage = (): React.JSX.Element => {
 		return (
 			data?.orders
 				.filter((item) => item.status === EOrderStatus.Pending)
-				.slice(0, 14) ?? []
+				.slice(0, 10) ?? []
 		);
 	}, [data?.orders]);
 
@@ -35,7 +35,7 @@ export const FeedPage = (): React.JSX.Element => {
 				</div>
 			) : (
 				<>
-					<h1 className='text text_type_main-large mt-10 mb-5 pl-5'>
+					<h1 className='text text_type_main-large mt-10 mb-5'>
 						Лента заказов
 					</h1>
 
