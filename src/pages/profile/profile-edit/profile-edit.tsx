@@ -8,9 +8,9 @@ import {
 
 import styles from './profile-edit.module.css';
 import { useEditUserMutation } from '@/services/user/api';
-import { useSelector } from 'react-redux';
 import { getUser } from '@/services/user/reducer';
 import { useForm } from '@/hooks/use-form';
+import { useSelector } from '@/utils/types';
 
 export const ProfileEdit = (): React.JSX.Element => {
 	const { values, handleChange, setValues } = useForm({

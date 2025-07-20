@@ -1,9 +1,9 @@
 import { ReactElement } from 'react';
-import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
 
 import { getIsAuthChecked, getUser } from '@/services/user/reducer';
 import { Preloader } from '../preloader/preloader';
+import { useSelector } from '@/utils/types';
 
 type ProtectedProps = {
 	component: ReactElement;

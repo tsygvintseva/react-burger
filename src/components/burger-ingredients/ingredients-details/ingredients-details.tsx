@@ -1,7 +1,8 @@
 import styles from './ingredients-details.module.css';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+
 import { selectIngredientById } from '@/services/ingredients/selectors';
+import { useSelector } from '@/utils/types';
 
 export const IngredientsDetails = (): React.JSX.Element => {
 	const { id } = useParams<{ id: string }>();

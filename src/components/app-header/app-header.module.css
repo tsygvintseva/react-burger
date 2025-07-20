@@ -21,6 +21,10 @@
 	text-decoration: none;
 }
 
+.link p {
+	white-space: nowrap;
+}
+
 .link_active {
 	color: var(--text-primary-color);
 }

@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useSelector } from 'react-redux';
 
 import { getConstructorData } from '@/services/constructor-data/reducer';
 import { EIngredientType } from '@/utils/enums';
-import { TIngredient } from '@/utils/types';
+import { TIngredient, useSelector } from '@/utils/types';
 import { IngredientsListItem } from '../ingredients-list-item/ingredients-list-item';
 import styles from './ingredients-list.module.css';
 

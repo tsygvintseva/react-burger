@@ -1,11 +1,13 @@
-.main {
+.profile {
 	display: flex;
-	width: 1240px;
-	height: 100%;
-	margin: 0 auto;
-	margin-top: 120px;
+	padding-top: 120px;
 	overflow: hidden;
 	column-gap: 60px;
+}
+
+.menu {
+	flex-shrink: 0;
+	width: 320px;
 }
 
 .nav {

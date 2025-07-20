@@ -96,4 +96,5 @@ export const {
 	moveIngredient,
 	clearConstructorData,
 } = constructorDataSlice.actions;
+
 export const { getConstructorData } = constructorDataSlice.selectors;

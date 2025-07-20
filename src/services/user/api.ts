@@ -3,6 +3,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { BASE_URL } from '@/utils/const';
 import { baseQueryRefreshToken } from '@/utils/refresh-token';
 import { setIsAuthChecked, setUser } from './reducer';
+import { ApiResponse } from '@/utils/types';
 
 export const userApiConfig = {
 	baseUrl: BASE_URL + '/auth',
@@ -17,13 +18,12 @@ type UserRequest = {
 	name: string;
 };
 
-type UserResponse = {
-	success: boolean;
+type UserResponse = ApiResponse<{
 	user: {
 		email: string;
 		name: string;
 	};
-};
+}>;
 
 export const userApi = createApi({
 	reducerPath: 'userApi',
@@ -57,13 +57,10 @@ export const userApi = createApi({
 			}),
 			invalidatesTags: [{ type: 'Auth', id: 'USER' }],
 
-			async onQueryStarted(_, { dispatch, queryFulfilled }) {
-				try {
-					const { data } = await queryFulfilled;
+			onQueryStarted(_, { dispatch, queryFulfilled }) {
+				queryFulfilled.then(({ data }) => {
 					dispatch(setUser(data.user));
-				} catch {
-					// intentionally left blank
-				}
+				});
 			},
 		}),
 	}),

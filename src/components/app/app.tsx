@@ -12,15 +12,18 @@ import { ProfilePage } from '@/pages/profile/profile';
 import { OrdersPage } from '@/pages/profile/orders/orders';
 import { NotFoundPage } from '@/pages/not-found/not-found';
 import { useGetIngredientsQuery } from '@/services/ingredients/api';
-import { ProfileEdit } from '../profile-edit/profile-edit';
+import { ProfileEdit } from '../../pages/profile/profile-edit/profile-edit';
 import { IngredientsDetails } from '../burger-ingredients/ingredients-details/ingredients-details';
 import { Modal } from '../modal/modal';
 import { Preloader } from '../preloader/preloader';
-import { IngredientsPage } from '@/pages/ingredients-page/ingredients-page';
 import { OnlyAuth, OnlyUnAuth } from './protected-route';
-import { useDispatch } from 'react-redux';
 import { useLazyGetUserQuery } from '@/services/user/api';
 import { setIsAuthChecked } from '@/services/user/reducer';
+import { useDispatch } from '@/utils/types';
+import { FeedPage } from '@/pages/feed/feed';
+import { IngredientPage } from '@/pages/ingredient/ingredient';
+import { OrderPage } from '@/pages/order/order';
+import { OrderModal } from '../order-modal/order-modal';
 
 export const App = (): React.JSX.Element => {
 	const dispatch = useDispatch();
@@ -68,6 +71,14 @@ export const App = (): React.JSX.Element => {
 										</Modal>
 									}
 								/>
+								<Route
+									path='/feed/:number'
+									element={<OrderModal onClose={handleModalClose} />}
+								/>
+								<Route
+									path='/profile/orders/:number'
+									element={<OrderModal onClose={handleModalClose} />}
+								/>
 							</Routes>
 						)}
 
@@ -94,7 +105,10 @@ export const App = (): React.JSX.Element => {
 							</Route>
 
 							<Route path='/' element={<HomePage />} />
-							<Route path='/ingredients/:id' element={<IngredientsPage />} />
+							<Route path='/feed' element={<FeedPage />} />
+							<Route path='/feed/:number' element={<OrderPage />} />
+							<Route path='/ingredients/:id' element={<IngredientPage />} />
+							<Route path='/profile/orders/:number' element={<OrderPage />} />
 
 							<Route path='*' element={<NotFoundPage />} />
 						</Routes>

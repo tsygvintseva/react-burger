@@ -1,0 +1,43 @@
+.status {
+	display: block;
+	margin-top: 8px;
+}
+
+.done {
+	color: var(--colors-interface-success);
+}
+
+.list {
+	display: grid;
+	row-gap: 16px;
+	max-height: 312px;
+	margin: 0;
+	margin-top: 24px;
+	padding-right: 24px;
+	padding-left: 16px;
+	overflow-y: auto;
+	list-style: none;
+}
+
+.list li {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.ingredientInfo {
+	display: flex;
+	align-items: center;
+	column-gap: 16px;
+}
+
+.footer,
+.price {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.price {
+	column-gap: 8px;
+}

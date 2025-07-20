@@ -7,12 +7,19 @@ import { ModalOverlay } from './modal-overlay/modal-overlay';
 
 type TModalProps = {
 	title?: string;
+	titleTextType?: TitleTextType;
 	children: ReactNode;
 	onClose: () => void;
 };
 
+export enum TitleTextType {
+	Digits = 'digits',
+	MainLarge = 'main-large',
+}
+
 export const Modal = ({
 	title,
+	titleTextType,
 	children,
 	onClose,
 }: TModalProps): React.JSX.Element => {
@@ -36,7 +43,10 @@ export const Modal = ({
 		<>
 			<div className={`${styles.modal} p-10`}>
 				<div className={styles.header}>
-					<p className='text text_type_main-large'>{title}</p>
+					<p
+						className={`${titleTextType === TitleTextType.Digits ? 'text_type_digits-default' : 'text_type_main-large'} text`}>
+						{title}
+					</p>
 
 					<CloseIcon
 						className={styles.closeButton}

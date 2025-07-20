@@ -42,7 +42,7 @@ export const ForgotPasswordPage = (): React.JSX.Element => {
 	};
 
 	return (
-		<div className={styles.wrapper}>
+		<section className={styles.wrapper}>
 			<h1 className='text text_type_main-medium'>Восстановление пароля</h1>
 
 			<form className={styles.form} onSubmit={handleSubmit}>
@@ -74,6 +74,6 @@ export const ForgotPasswordPage = (): React.JSX.Element => {
 					</Button>
 				</p>
 			</div>
-		</div>
+		</section>
 	);
 };

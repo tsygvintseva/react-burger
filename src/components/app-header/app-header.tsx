@@ -7,8 +7,8 @@ import {
 	ProfileIcon,
 	Logo,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useSelector } from 'react-redux';
 import { getUser } from '@/services/user/reducer';
+import { useSelector } from 'react-redux';
 
 export const AppHeader = () => {
 	const user = useSelector(getUser);

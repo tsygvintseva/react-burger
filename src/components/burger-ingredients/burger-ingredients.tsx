@@ -1,5 +1,4 @@
 import React, { UIEvent, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { selectGroupedIngredients } from '@/services/ingredients/selectors';
 import { EIngredientType } from '@/utils/enums';
@@ -7,6 +6,7 @@ import { tabs } from '@/utils/const';
 import styles from './burger-ingredients.module.css';
 import { IngredientsMenu } from './ingredients-menu/ingredients-menu';
 import { IngredientsList } from './ingredients-list/ingredients-list';
+import { useSelector } from '@/utils/types';
 
 export const BurgerIngredients = (): React.JSX.Element => {
 	const groupedIngredients = useSelector(selectGroupedIngredients);
@@ -54,7 +54,7 @@ export const BurgerIngredients = (): React.JSX.Element => {
 			/>
 
 			<div
-				className={`${styles.ingredients_list} mt-10 mb-10 custom-scroll`}
+				className={`${styles.ingredients_list} mt-10 custom-scroll`}
 				onScroll={handleScroll}>
 				{Object.entries(groupedIngredients).map(([type, items]) => (
 					<IngredientsList

@@ -24,6 +24,10 @@
 	opacity: 0.4;
 }
 
+.empty p {
+	padding-top: 56px;
+}
+
 @keyframes bounce {
 	0%,
 	100% {

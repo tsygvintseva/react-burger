@@ -1,9 +1,8 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { moveIngredient } from '@/services/constructor-data/reducer';
-import { TIngredientUniq } from '@/utils/types';
+import { TIngredientUniq, useDispatch } from '@/utils/types';
 import { ConstructorListItem } from '../constructor-list-item/constructor-list-item';
 import styles from './constructor-list.module.css';
 import { EIngredientType } from '@/utils/enums';
