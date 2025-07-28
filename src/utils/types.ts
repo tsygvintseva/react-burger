@@ -20,7 +20,7 @@ export type TIngredient = {
 	image: string;
 	image_large: string;
 	image_mobile: string;
-	__v: number;
+	__v?: number;
 };
 
 export type TIngredientUniq = TIngredient & {
