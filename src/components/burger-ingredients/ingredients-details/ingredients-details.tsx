@@ -34,7 +34,11 @@ export const IngredientsDetails = (): React.JSX.Element => {
 				alt={`Так выглядит ${ingredient?.name}`}
 			/>
 
-			<p className='text text_type_main-medium mt-4 mb-8'>{ingredient?.name}</p>
+			<p
+				className='text text_type_main-medium mt-4 mb-8'
+				data-testid='modal-title'>
+				{ingredient?.name}
+			</p>
 
 			<table className={styles.nutrition}>
 				<thead>

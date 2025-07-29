@@ -81,6 +81,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 					<>
 						<div
 							ref={dropTarget}
+							data-testid='constructor-dropzone'
 							className={` ${styles.constructor} ${isHover ? styles.bounce : ''} mb-10`}>
 							{
 								<ConstructorList
@@ -103,6 +104,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 								htmlType='button'
 								type='primary'
 								size='large'
+								data-testid='submit-order'
 								onClick={handleClick}>
 								Оформить заказ
 							</Button>
@@ -111,6 +113,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 				) : (
 					<div
 						ref={dropTarget}
+						data-testid='constructor-dropzone'
 						className={`${styles.empty} ${isHover ? styles.bounce : ''}`}>
 						<p
 							className={`${isHover ? styles.bounce : ''} text text_type_main-default text_color_inactive`}>

@@ -28,7 +28,11 @@ export const IngredientsListItem = ({
 	});
 
 	return (
-		<li className={`${styles.ingredient}`} ref={ref} style={{ opacity }}>
+		<li
+			className={`${styles.ingredient}`}
+			ref={ref}
+			style={{ opacity }}
+			data-testid='ingredient-card'>
 			<Link
 				to={`/ingredients/${ingredient._id}`}
 				state={{ background: location }}

@@ -50,14 +50,16 @@ export const ConstructorList = ({
 	return (
 		<>
 			{first && first.type === EIngredientType.Bun && (
-				<ConstructorElement
-					type='top'
-					isLocked={true}
-					text={first.name}
-					price={first.price}
-					thumbnail={first.image}
-					extraClass={styles.bun}
-				/>
+				<div data-testid='constructor-item'>
+					<ConstructorElement
+						type='top'
+						isLocked={true}
+						text={first.name}
+						price={first.price}
+						thumbnail={first.image}
+						extraClass={styles.bun}
+					/>
+				</div>
 			)}
 
 			<ul className={`${styles.list} mt-4 mb-4`}>
@@ -65,14 +67,16 @@ export const ConstructorList = ({
 			</ul>
 
 			{last && last.type === EIngredientType.Bun && (
-				<ConstructorElement
-					type='bottom'
-					isLocked={true}
-					text={last.name}
-					price={last.price}
-					thumbnail={last.image}
-					extraClass={styles.bun}
-				/>
+				<div data-testid='constructor-item'>
+					<ConstructorElement
+						type='bottom'
+						isLocked={true}
+						text={last.name}
+						price={last.price}
+						thumbnail={last.image}
+						extraClass={styles.bun}
+					/>
+				</div>
 			)}
 		</>
 	);
