@@ -41,18 +41,20 @@ export const Modal = ({
 
 	return createPortal(
 		<>
-			<div className={`${styles.modal} p-10`}>
+			<div className={`${styles.modal} p-10`} data-testid='modal'>
 				<div className={styles.header}>
 					<p
 						className={`${titleTextType === TitleTextType.Digits ? 'text_type_digits-default' : 'text_type_main-large'} text`}>
 						{title}
 					</p>
 
-					<CloseIcon
-						className={styles.closeButton}
-						type='primary'
-						onClick={onClose}
-					/>
+					<div data-testid='modal-close'>
+						<CloseIcon
+							className={styles.closeButton}
+							type='primary'
+							onClick={onClose}
+						/>
+					</div>
 				</div>
 
 				{children}

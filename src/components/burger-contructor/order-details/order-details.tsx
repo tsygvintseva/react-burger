@@ -28,7 +28,9 @@ export const OrderDetails = ({
 					</>
 				) : isSuccess ? (
 					<>
-						<p className={`${styles.number} text text_type_digits-large mb-8`}>
+						<p
+							className={`${styles.number} text text_type_digits-large mb-8`}
+							data-testid='order-number'>
 							{orderNumber}
 						</p>
 

@@ -84,6 +84,7 @@ export const ConstructorListItem = ({
 			ref={ref}
 			style={{ opacity }}
 			className={styles.ingredient}
+			data-testid='constructor-item'
 			data-handler-id={handlerId}>
 			<DragIcon type='primary' />
 			<ConstructorElement

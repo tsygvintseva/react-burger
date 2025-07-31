@@ -1,37 +1,45 @@
 /// <reference types="cypress" />
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+
+import {
+	constructorDropzone,
+	ingredientCard,
+	modal,
+	modalClose,
+	submitOrder,
+} from './selectors';
+
+export {};
+
+declare global {
+	// eslint-disable-next-line @typescript-eslint/no-namespace
+	namespace Cypress {
+		interface Chainable {
+			dragIngredient(): Chainable<void>;
+			openIngredientDetailsModal(): Chainable<void>;
+			openOrderDetailsModal(): Chainable<void>;
+			closeModal(): Chainable<void>;
+		}
+	}
+}
+
+Cypress.Commands.add('dragIngredient', () => {
+	cy.get(ingredientCard).first().trigger('dragstart');
+	cy.get(constructorDropzone).trigger('drop');
+});
+
+Cypress.Commands.add('openIngredientDetailsModal', () => {
+	cy.get(ingredientCard).first().click();
+	cy.get(modal).should('be.visible');
+});
+
+Cypress.Commands.add('openOrderDetailsModal', () => {
+	cy.get(submitOrder).click();
+	cy.wait(500);
+	cy.wait('@postOrder');
+	cy.get(modal).should('be.visible');
+});
+
+Cypress.Commands.add('closeModal', () => {
+	cy.get(modalClose).click();
+	cy.get(modal).should('not.exist');
+});
